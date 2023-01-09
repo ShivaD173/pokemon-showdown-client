@@ -27,6 +27,9 @@
 				if (this.curTeam.format.includes('bdsp')) {
 					this.curTeam.dex = Dex.mod('gen8bdsp');
 				}
+				if (this.curTeam.format.includes('vgcplat')) {
+					this.curTeam.dex = Dex.mod('gen4vgcplat');
+				}
 				Storage.activeSetList = this.curSetList;
 			}
 		},
@@ -693,6 +696,9 @@
 			}
 			if (this.curTeam.format.includes('bdsp')) {
 				this.curTeam.dex = Dex.mod('gen8bdsp');
+			}
+			if (this.curTeam.format.includes('vgcplat')) {
+				// this.curTeam.dex = Dex.mod('gen8bdsp');
 			}
 			Storage.activeSetList = this.curSetList = Storage.unpackTeam(this.curTeam.team);
 			this.curTeamIndex = i;
@@ -1488,6 +1494,9 @@
 			}
 			if (this.curTeam.format.includes('bdsp')) {
 				this.curTeam.dex = Dex.mod('gen8bdsp');
+			}
+			if (this.curTeam.format.includes('vgcplat')) {
+				this.curTeam.dex = Dex.mod('gen4vgcplat');
 			}
 			this.save();
 			if (this.curTeam.gen === 5 && !Dex.loadedSpriteData['bw']) Dex.loadSpriteData('bw');

@@ -886,7 +886,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table['gen' + dex.gen];
 		} else if (isVGCOrBS) {
-			table = table['gen' + dex.gen + 'vgc'];
+			// table = table['gen' + dex.gen + 'vgc'];
+			table = table['gen4vgc'];
 		} else if (
 			table['gen' + dex.gen + 'doubles'] && dex.gen > 4 &&
 			this.formatType !== 'letsgo' && this.formatType !== 'bdspdoubles' && this.formatType !== 'dlc1doubles' &&
@@ -1477,32 +1478,34 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('bdsp')) lsetTable = lsetTable['gen8bdsp'];
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('dlc1')) lsetTable = lsetTable['gen8dlc1'];
+		if (this.formatType === 'doubles') lsetTable = lsetTable['gen4vgcplat'];
+		// lsetTable = lsetTable['gen4vgc']
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
 			if (learnset) {
 				for (let moveid in learnset) {
 					let learnsetEntry = learnset[moveid];
 					const move = dex.moves.get(moveid);
-					const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
-					if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
-						continue;
-					}
-					if (
-						!learnsetEntry.includes(gen) &&
-						(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
-					) {
-						continue;
-					}
-					if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-						continue;
-					}
-					if (
-						this.formatType?.startsWith('dlc1') &&
-						BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
-					) {
-						continue;
-					}
-					if (moves.includes(moveid)) continue;
+					// const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
+					// if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
+					// 	continue;
+					// }
+					// if (
+					// 	!learnsetEntry.includes(gen) &&
+					// 	(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
+					// ) {
+					// 	continue;
+					// }
+					// if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
+					// 	continue;
+					// }
+					// if (
+					// 	this.formatType?.startsWith('dlc1') &&
+					// 	BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
+					// ) {
+					// 	continue;
+					// }
+					// if (moves.includes(moveid)) continue;
 					moves.push(moveid);
 					if (moveid === 'sketch') sketch = true;
 					if (moveid === 'hiddenpower') {
