@@ -1036,7 +1036,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	//
 
 	for (const mod of ['gen7letsgo', 'gen8bdsp', 'gen4vgcplat']) {
-		console.log(mod)
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);
