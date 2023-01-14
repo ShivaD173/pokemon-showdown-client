@@ -31,9 +31,9 @@ Config.defaultserver = {
 	host: '73.191.22.186',
 	// host: '10.0.0.67',
 	port: 8000,
-	httpport: 8000,
+	httpport: 0,
 	altport: 80,
-	registered: true
+	registered: false
 };
 
 Config.roomsFirstOpenScript = function () {
