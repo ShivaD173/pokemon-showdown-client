@@ -698,7 +698,7 @@
 				this.curTeam.dex = Dex.mod('gen8bdsp');
 			}
 			if (this.curTeam.format.includes('vgcplat')) {
-				// this.curTeam.dex = Dex.mod('gen8bdsp');
+				this.curTeam.dex = Dex.mod('gen4vgcplat');
 			}
 			Storage.activeSetList = this.curSetList = Storage.unpackTeam(this.curTeam.team);
 			this.curTeamIndex = i;

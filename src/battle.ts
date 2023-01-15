@@ -3329,6 +3329,9 @@ export class Battle {
 			if (this.tier.includes(`Let's Go`)) {
 				this.dex = Dex.mod('gen7letsgo' as ID);
 			}
+			if (this.tier.includes('VGC Plat')) {
+				this.dex = Dex.mod('gen4vgcplat' as ID);
+			}
 			this.log(args);
 			break;
 		}
