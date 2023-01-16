@@ -334,7 +334,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isStadium = ('' + genIdent).endsWith('.04');
 		const isDoubles = (genIdent < 0);
 		const isVGC = ('' + genIdent).endsWith('.5');
-		const isVGCPlat = (genIdent === -4.7)
+		const isVGCPlat = (genIdent === -4.7);
 		const genNum = Math.floor(isDoubles ? -genIdent : genIdent);
 		const gen = (() => {
 			let genStr = 'gen' + genNum;
@@ -342,7 +342,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isLetsGo) genStr += 'letsgo';
 			if (isBDSP) genStr += 'bdsp';
 			if (isStadium) genStr += 'stadium' + (genNum > 1 ? genNum : '');
-			if (isVGCPlat) genStr = 'gen4vgcplat'
+			if (isVGCPlat) genStr = 'gen4vgcplat';
 			return genStr;
 		})();
 		// process.stdout.write("" + gen + (isDoubles ? " doubles" : "") + "... ");
@@ -498,7 +498,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['gen8bdsp'].overrideTier = overrideTier;
 			BattleTeambuilderTable['gen8bdsp'].monotypeBans = monotypeBans;
 			BattleTeambuilderTable['gen8bdsp'].formatSlices = formatSlices;
-		} else if (isVGCPlat){
+		} else if (isVGCPlat) {
 			BattleTeambuilderTable['gen4vgcplat'] = {};
 			BattleTeambuilderTable['gen4vgcplat'].learnsets = {};
 			BattleTeambuilderTable['gen4vgcplat'].tiers = tiers;
@@ -510,10 +510,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable[gen + 'vgc'] = {};
 			BattleTeambuilderTable[gen + 'vgc'].tiers = tiers;
 			BattleTeambuilderTable[gen + 'vgc'].formatSlices = formatSlices;
-			if (gen === 4){
-				BattleTeambuilderTable['gen4vgcplat'].tiers = tiers;
-				BattleTeambuilderTable['gen4vgcplat'].formatSlices = formatSlices;
-			}
 		} else if (isDoubles) {
 			BattleTeambuilderTable[gen + 'doubles'] = {};
 			BattleTeambuilderTable[gen + 'doubles'].tiers = tiers;

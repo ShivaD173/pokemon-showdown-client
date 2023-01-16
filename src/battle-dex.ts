@@ -843,7 +843,12 @@ class ModdedDex {
 		this.modid = modid;
 		const gen = parseInt(modid.substr(3, 1), 10);
 		if (!modid.startsWith('gen') || !gen) throw new Error("Unsupported modid");
-		this.gen = gen;
+		if (modid.endsWith("vgcplat")) {
+			this.gen = 9
+		}
+		else {
+			this.gen = gen;
+		}
 	}
 	moves = {
 		get: (name: string): Move => {
