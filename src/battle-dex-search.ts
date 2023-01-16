@@ -780,7 +780,10 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
-			if (this.formatType === 'vgcplat') table = table['gen4vgcplat'];
+			if (this.formatType === 'vgcplat') {
+				table = table['gen4vgcplat'];
+				genChar = '4'
+			}
 			let learnset = table.learnsets[learnsetid];
 			if (learnset && (moveid in learnset) && (!this.format.startsWith('tradebacks') ? learnset[moveid].includes(genChar) :
 				learnset[moveid].includes(genChar) ||
