@@ -598,8 +598,8 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
 			if (format === "vgcplat") {
-				this.dex = Dex.mod('gen4vgcplat' as ID)
-				this.formatType = 'vgcplat'
+				this.dex = Dex.mod('gen4vgcplat' as ID);
+				this.formatType = 'vgcplat';
 			}
 		}
 		if (format === 'vgc2020') this.formatType = 'dlc1doubles';
@@ -782,7 +782,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 			if (this.formatType === 'vgcplat') {
 				table = table['gen4vgcplat'];
-				genChar = '4'
+				genChar = '4';
 			}
 			let learnset = table.learnsets[learnsetid];
 			if (learnset && (moveid in learnset) && (!this.format.startsWith('tradebacks') ? learnset[moveid].includes(genChar) :
@@ -896,7 +896,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table['gen' + dex.gen];
 
-		} else if (format == "vgcplat") {
+		} else if (format === "vgcplat") {
 			table = table['gen4vgcplat'];
 		} else if (isVGCOrBS) {
 			table = table['gen' + dex.gen + 'vgc'];
@@ -960,6 +960,9 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		else if (format === 'nu') tierSet = tierSet.slice(slices.NU || slices.RU || slices.UU);
 		else if (format === 'pu') tierSet = tierSet.slice(slices.PU || slices.NU);
 		else if (format === 'zu') tierSet = tierSet.slice(slices.ZU || slices.PU || slices.NU);
+		else if (format === '6u') tierSet = tierSet.slice(slices["6U"]);
+		else if (format === '7u') tierSet = tierSet.slice(slices["7U"]);
+		else if (format === '8u') tierSet = tierSet.slice(slices["8U"]);
 		else if (format === 'lc' || format === 'lcuu' || format.startsWith('lc') || (format !== 'caplc' && format.endsWith('lc'))) tierSet = tierSet.slice(slices.LC);
 		else if (format === 'cap') tierSet = tierSet.slice(0, slices.AG || slices.Uber).concat(tierSet.slice(slices.OU));
 		else if (format === 'caplc') {

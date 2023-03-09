@@ -844,9 +844,8 @@ class ModdedDex {
 		const gen = parseInt(modid.substr(3, 1), 10);
 		if (!modid.startsWith('gen') || !gen) throw new Error("Unsupported modid");
 		if (modid.endsWith("vgcplat")) {
-			this.gen = 9
-		}
-		else {
+			this.gen = 9;
+		} else {
 			this.gen = gen;
 		}
 	}
