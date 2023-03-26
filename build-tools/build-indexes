@@ -398,7 +398,13 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (species.name === 'Pikachu-Alola') return 'Illegal';
 					return species.tier;
 				}
-				if (isVGC || isVGCPlat) {
+				if (isVGCPlat) {
+					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
+					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
+					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
+					return species.tier
+				}
+				if (isVGC) {
 					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
@@ -539,7 +545,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		}
 
 		const tierOrder = (() => {
-			if (isVGC || isVGCPlat) {
+			if (isVGCPlat) {
+				return ["Mythical", "Restricted Legendary","18","17","16","15","14","13","12","11","10","9","8","7","6","5","4","3","2","1"];
+			}
+			if (isVGC) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
 			}
 			if (isDoubles && genNum > 4) {
@@ -552,7 +561,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		})();
 
 		for (const tier of tierOrder) {
-			if (tier in {OU:1, AG:1, Uber:1, UU:1, RU:1, NU:1, PU:1, "(PU)":1, ZU:1, "6U":1, "7U":1, "8U":1, NFE:1, LC:1, DOU:1, DUU:1, "(DUU)":1, New:1, Legal:1, Regular:1, "Restricted Legendary":1, "CAP LC":1}) {
+			if (tier in {OU:1, AG:1, Uber:1, UU:1, RU:1, NU:1, PU:1, "(PU)":1, ZU:1, "6U":1, "7U":1, "8U":1, NFE:1, LC:1, DOU:1, DUU:1, "(DUU)":1, New:1, Legal:1, Regular:1, "Restricted Legendary":1, "CAP LC":1, "18":1,"17":1,"16":1,"15":1,"14":1,"13":1,"12":1,"11":1,"10":1,"9":1,"8":1,"7":1,"6":1,"5":1,"4":1,"3":1,"2":1,"1":1}) {
 				let usedTier = tier;
 				if (usedTier === "(PU)") usedTier = "ZU";
 				if (usedTier === "(DUU)") usedTier = "DNU";
