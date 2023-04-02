@@ -597,7 +597,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		}
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
-			if (format === "vgcplat") {
+			if (format.startsWith("vgcplat")) {
 				this.dex = Dex.mod('gen4vgcplat' as ID);
 				this.formatType = 'vgcplat';
 			}
@@ -780,7 +780,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
-			if (this.formatType === 'vgcplat') {
+			if (this.formatType?.startsWith('vgcplat')) {
 				table = table['gen4vgcplat'];
 				genChar = '4';
 			}
@@ -801,7 +801,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		let table = window.BattleTeambuilderTable;
 		const gen = this.dex.gen;
 		const tableKey = this.formatType === 'doubles' ? `gen${gen}doubles` :
-			this.formatType === 'vgcplat' ? 'gen4vgcplat' :
+			this.formatType?.startsWith('vgcplat') ? 'gen4vgcplat' :
 			this.formatType === 'letsgo' ? 'gen7letsgo' :
 			this.formatType === 'bdsp' ? 'gen8bdsp' :
 			this.formatType === 'bdspdoubles' ? 'gen8bdspdoubles' :
@@ -897,7 +897,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table['gen' + dex.gen];
 
-		} else if (format === "vgcplat") {
+		} else if (format.startsWith("vgcplat")) {
 			table = table['gen4vgcplat'];
 		} else if (isVGCOrBS) {
 			table = table['gen' + dex.gen + 'vgc'];
@@ -1165,6 +1165,8 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) {
 			table = table['gen8bdsp'];
+		} else if (this.formatType?.startsWith('vgcplat')) {
+			table = table['gen4vgcplat'];
 		} else if (this.formatType === 'natdex') {
 			table = table['gen' + this.dex.gen + 'natdex'];
 		} else if (this.formatType === 'metronome') {
@@ -1494,13 +1496,13 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('bdsp')) lsetTable = lsetTable['gen8bdsp'];
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('dlc1')) lsetTable = lsetTable['gen8dlc1'];
-		if (this.formatType === 'vgcplat') lsetTable = lsetTable['gen4vgcplat'];
+		if (this.formatType?.startsWith('vgcplat')) lsetTable = lsetTable['gen4vgcplat'];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
 			if (learnset) {
 				for (let moveid in learnset) {
 					let learnsetEntry = learnset[moveid];
-					if (this.formatType !== "vgcplat") {
+					if (!this.formatType?.startsWith("vgcplat")) {
 						const move = dex.moves.get(moveid);
 						const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
 						if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {

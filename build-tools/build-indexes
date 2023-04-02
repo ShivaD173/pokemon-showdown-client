@@ -605,7 +605,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		if (genNum === 6) unreleasedItems.push(['header', "Unreleased"]);
 		for (const id of itemList) {
 			const item = Dex.mod(gen).items.get(id);
-			if (item.gen > genNum) {
+			if (item.gen > genNum && !isVGCPlat) {
 				continue;
 			}
 			if (item.isNonstandard && !isMetBattle) {
@@ -626,18 +626,21 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			case 'choiceband':
 			case 'choicescarf':
 			case 'choicespecs':
+			case 'covertcloak':
+			case 'clearamulet':
 			case 'eviolite':
 			case 'assaultvest':
 			case 'focussash':
-			case 'powerherb':
+			// case 'powerherb':
 			case 'rockyhelmet':
-			case 'heavydutyboots':
+			// case 'heavydutyboots':
 			case 'expertbelt':
 			case 'salacberry':
+			case 'custapberry':
 				greatItems.push(id);
 				break;
 			case 'mentalherb':
-				if (genNum > 4) greatItems.push(id);
+				if (genNum > 4 || isVGCPlat) greatItems.push(id);
 				else poorItems.push(id);
 				break;
 			case 'lumberry':
