@@ -597,8 +597,8 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		}
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
+			this.dex = Dex.forFormat(format)
 			if (format.startsWith("vgcplat")) {
-				this.dex = Dex.mod('gen4vgcplat' as ID);
 				this.formatType = 'vgcplat';
 			}
 		}
@@ -806,6 +806,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		const gen = this.dex.gen;
 		const tableKey = this.formatType === 'doubles' ? `gen${gen}doubles` :
 			this.formatType?.startsWith('vgcplat') ? 'gen4vgcplat' :
+			this.format.startsWith('vgcgay') ? 'gen9vgcgay' :
 			this.formatType === 'letsgo' ? 'gen7letsgo' :
 			this.formatType === 'bdsp' ? 'gen8bdsp' :
 			this.formatType === 'bdspdoubles' ? 'gen8bdspdoubles' :
@@ -902,6 +903,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table['gen' + dex.gen];
 
+		} else if (format.startsWith("vgcgay")) {
+			table = table['gen9vgcgay'];
 		} else if (format.startsWith("vgcplat")) {
 			table = table['gen4vgcplat'];
 		} else if (isVGCOrBS) {
@@ -1095,7 +1098,8 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isAAA = (format === 'almostanyability' || format.includes('aaa'));
-		const dex = this.dex;
+		// const dex = this.dex;
+		const dex = Dex.forFormat(format)
 		let species = dex.species.get(this.species);
 		let abilitySet: SearchRow[] = [['header', "Abilities"]];
 
@@ -1176,6 +1180,8 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 			table = table['gen8bdsp'];
 		} else if (this.formatType?.startsWith('vgcplat')) {
 			table = table['gen4vgcplat'];
+		} else if (this.format.startsWith('vgcgay')) {
+			table = table['gen9vgcgay'];
 		} else if (this.formatType === 'natdex') {
 			table = table['gen' + this.dex.gen + 'natdex'];
 		} else if (this.formatType === 'metronome') {
@@ -1492,9 +1498,14 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
 		const isTradebacks = format.includes('tradebacks');
-		const regionBornLegality = dex.gen >= 6 &&
+		let regionBornLegality = dex.gen >= 6 &&
 			/^battle(spot|stadium|festival)/.test(format) || format.startsWith('vgc') ||
 			(dex.gen === 9 && this.formatType !== 'natdex');
+
+		if (this.format.includes("vgcgay")){
+			regionBornLegality = false;
+		}
+		console.log(regionBornLegality);
 
 		let learnsetid = this.firstLearnsetid(species.id);
 		let moves: string[] = [];
@@ -1506,8 +1517,19 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('dlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('vgcplat')) lsetTable = lsetTable['gen4vgcplat'];
+		// if (this.format.startsWith('vgcgay')) lsetTable = lsetTable['gen9vgcgay'];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
+			if (this.format.startsWith('vgcgay')){
+				// Append to list
+				console.log(learnset)
+				console.log(lsetTable['gen9vgcgay'].learnsets[learnsetid])
+				learnset = {
+					...learnset,
+					...lsetTable['gen9vgcgay'].learnsets[learnsetid],
+				}
+				console.log(learnset)
+			}
 			if (learnset) {
 				for (let moveid in learnset) {
 					let learnsetEntry = learnset[moveid];

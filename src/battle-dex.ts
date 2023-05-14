@@ -206,6 +206,25 @@ const Dex = new class implements ModdedDex {
 		if (!gen) return this;
 		return this.mod(`gen${gen}` as ID);
 	}
+	forFormat(format: string) {
+		if (format.includes('letsgo')) {
+			return this.mod('gen7letsgo' as ID);
+		}
+		if (format.includes('bdsp')) {
+			return this.mod('gen8bdsp' as ID);
+		}
+		if (format.includes('vgcplat')) {
+			return this.mod('gen4vgcplat' as ID);
+		}
+		if (format.includes('vgcgay')) {
+			return this.mod('gen9vgcgay' as ID);
+		}
+		if (format.slice(0, 3) === 'gen') {
+			const gen = (Number(format.charAt(3)) || 6);
+			return this.forGen(gen);
+		}
+		return this;
+	}
 
 	resolveAvatar(avatar: string): string {
 		if (window.BattleAvatarNumbers && avatar in BattleAvatarNumbers) {
