@@ -1098,8 +1098,9 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isAAA = (format === 'almostanyability' || format.includes('aaa'));
-		// const dex = this.dex;
-		const dex = Dex.forFormat(format)
+		const dex = this.dex;
+		// Causes HA for gen4 for some unknown reason
+		// const dex = Dex.forFormat(format)
 		let species = dex.species.get(this.species);
 		let abilitySet: SearchRow[] = [['header', "Abilities"]];
 

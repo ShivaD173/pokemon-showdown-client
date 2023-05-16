@@ -1052,6 +1052,23 @@ class BattleTooltips {
 			}
 		}
 
+		// VGC Gay exclusive changes
+		if (item === 'protector'){
+			if (speciesName === 'Rhyperior' && this.battle.gen === 9) {
+				stats.def *= 1.5;
+			}
+		}
+		if (item === 'electirizer'){
+			if (speciesName === 'Electivire' && this.battle.gen === 9) {
+				stats.atk *= 1.5;
+			}
+		}
+		if (item === 'magmarizer'){
+			if (speciesName === 'Magmortar' && this.battle.gen === 9) {
+				stats.spa *= 1.5;
+			}
+		}
+
 		if (speciesName === 'Ditto' && !(clientPokemon && 'transform' in clientPokemon.volatiles)) {
 			if (item === 'quickpowder') {
 				speedModifiers.push(2);
