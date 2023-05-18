@@ -783,6 +783,10 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		while (learnsetid) {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
+			if (this.format?.startsWith('vgcgay')) {
+				table = table['gen9vgcgay'];
+				genChar = `${gen}`;
+			}
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 			if (this.formatType?.startsWith('vgcplat')) {
 				table = table['gen4vgcplat'];
@@ -804,9 +808,10 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		}
 		let table = window.BattleTeambuilderTable;
 		const gen = this.dex.gen;
-		const tableKey = this.formatType === 'doubles' ? `gen${gen}doubles` :
+		const tableKey = 
 			this.formatType?.startsWith('vgcplat') ? 'gen4vgcplat' :
 			this.format.startsWith('vgcgay') ? 'gen9vgcgay' :
+			this.formatType === 'doubles' ? `gen${gen}doubles` :
 			this.formatType === 'letsgo' ? 'gen7letsgo' :
 			this.formatType === 'bdsp' ? 'gen8bdsp' :
 			this.formatType === 'bdspdoubles' ? 'gen8bdspdoubles' :
