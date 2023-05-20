@@ -1508,10 +1508,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			/^battle(spot|stadium|festival)/.test(format) || format.startsWith('vgc') ||
 			(dex.gen === 9 && this.formatType !== 'natdex');
 
-		if (this.format.includes("vgcgay")){
-			regionBornLegality = false;
-		}
-		console.log(regionBornLegality);
+		if (this.format.includes("vgcgay")) regionBornLegality = false;
 
 		let learnsetid = this.firstLearnsetid(species.id);
 		let moves: string[] = [];
@@ -1523,18 +1520,14 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('dlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('vgcplat')) lsetTable = lsetTable['gen4vgcplat'];
-		// if (this.format.startsWith('vgcgay')) lsetTable = lsetTable['gen9vgcgay'];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
 			if (this.format.startsWith('vgcgay')){
 				// Append to list
-				console.log(learnset)
-				console.log(lsetTable['gen9vgcgay'].learnsets[learnsetid])
 				learnset = {
 					...learnset,
 					...lsetTable['gen9vgcgay'].learnsets[learnsetid],
 				}
-				console.log(learnset)
 			}
 			if (learnset) {
 				for (let moveid in learnset) {
