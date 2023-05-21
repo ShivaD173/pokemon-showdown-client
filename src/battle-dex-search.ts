@@ -601,9 +601,9 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (format.startsWith("vgcplat")) {
 				this.formatType = 'vgcplat';
 			}
-			if (format.startsWith("vgcgay")) {
-				this.formatType = 'natdex';
-			}
+			// if (format.startsWith("vgcgay")) {
+			// 	this.formatType = 'natdex';
+			// }
 		}
 		if (format === 'vgc2020') this.formatType = 'dlc1doubles';
 		if (format.includes('bdsp')) {
@@ -1523,15 +1523,16 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('dlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('vgcplat')) lsetTable = lsetTable['gen4vgcplat'];
+		if (this.format.startsWith('vgcgay')) lsetTable = lsetTable['gen9vgcgay'];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
-			if (this.format.startsWith('vgcgay')){
-				// Append to list
-				learnset = {
-					...learnset,
-					...lsetTable['gen9vgcgay'].learnsets[learnsetid],
-				}
-			}
+			// if (this.format.startsWith('vgcgay')){
+			// 	// Append to list
+			// 	learnset = {
+			// 		...learnset,
+			// 		...lsetTable['gen9vgcgay'].learnsets[learnsetid],
+			// 	}
+			// }
 			if (learnset) {
 				for (let moveid in learnset) {
 					let learnsetEntry = learnset[moveid];
