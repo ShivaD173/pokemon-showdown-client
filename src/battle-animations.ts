@@ -2763,7 +2763,7 @@ export class PokemonSprite extends Sprite {
 			status += '<span class="slp">SLP</span> ';
 		} else if (pokemon.status === 'par') {
 			status += '<span class="par">PAR</span> ';
-		} else if (pokemon.status === 'frz') {
+		} else if (pokemon.status === 'frz' || pokemon.status === 'fst') {
 			status += '<span class="frz">FRZ</span> ';
 		}
 		if (pokemon.terastallized) {

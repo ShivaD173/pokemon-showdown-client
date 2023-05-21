@@ -1012,6 +1012,10 @@ class BattleTooltips {
 			if (this.battle.gen > 2 && ability === 'quickfeet') {
 				stats.spe = Math.floor(stats.spe * 1.5);
 			}
+
+			if (pokemon.status === 'fst') {
+				stats.spa = Math.floor(stats.spa * 0.5);
+			}
 		}
 
 		// gen 1 doesn't support items

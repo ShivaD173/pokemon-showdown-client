@@ -601,6 +601,9 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (format.startsWith("vgcplat")) {
 				this.formatType = 'vgcplat';
 			}
+			if (format.startsWith("vgcgay")) {
+				this.formatType = 'natdex';
+			}
 		}
 		if (format === 'vgc2020') this.formatType = 'dlc1doubles';
 		if (format.includes('bdsp')) {

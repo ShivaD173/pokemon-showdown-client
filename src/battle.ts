@@ -1684,6 +1684,7 @@ export class Battle {
 					}
 				}
 				switch (effect.id) {
+				case 'fst':
 				case 'brn':
 					this.scene.runStatusAnim('brn' as ID, [poke]);
 					break;
@@ -2029,6 +2030,7 @@ export class Battle {
 			case 'par':
 				this.scene.resultAnim(poke, 'Already paralyzed', 'neutral');
 				break;
+			case 'fst':
 			case 'frz':
 				this.scene.resultAnim(poke, 'Already frozen', 'neutral');
 				break;
@@ -2141,6 +2143,7 @@ export class Battle {
 				this.scene.runStatusAnim('par' as ID, [poke]);
 				break;
 			case 'frz':
+			case 'fst':
 				this.scene.resultAnim(poke, 'Frozen', 'frz');
 				this.scene.runStatusAnim('frz' as ID, [poke]);
 				break;
@@ -2186,6 +2189,7 @@ export class Battle {
 					this.scene.resultAnim(poke, 'Paralysis cured', 'good');
 					break;
 				case 'frz':
+				case 'fst':
 					this.scene.resultAnim(poke, 'Thawed', 'good');
 					break;
 				default:
@@ -3188,7 +3192,7 @@ export class Battle {
 		// status parse
 		if (!status) {
 			output.status = '';
-		} else if (status === 'par' || status === 'brn' || status === 'slp' || status === 'frz' || status === 'tox') {
+		} else if (status === 'par' || status === 'brn' || status === 'slp' || status === 'frz' || status === 'fst' || status === 'tox') {
 			output.status = status;
 		} else if (status === 'psn' && output.status !== 'tox') {
 			output.status = status;
