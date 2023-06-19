@@ -1526,13 +1526,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.format.startsWith('vgcgay')) lsetTable = lsetTable['gen9vgcgay'];
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
-			// if (this.format.startsWith('vgcgay')){
-			// 	// Append to list
-			// 	learnset = {
-			// 		...learnset,
-			// 		...lsetTable['gen9vgcgay'].learnsets[learnsetid],
-			// 	}
-			// }
 			if (learnset) {
 				for (let moveid in learnset) {
 					let learnsetEntry = learnset[moveid];

@@ -561,10 +561,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isDoubles && genNum > 4) {
 				return ["DUber", "(DUber)", "DOU", "DBL", "(DOU)", "DUU", "(DUU)", "New", "NFE", "LC"];
 			}
-			if (gen === 'gen5' || gen === 'gen6' || gen === 'gen7') {
+			if (gen === 'gen6' || gen === 'gen7') {
 				return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "(Uber)", "OU", "(OU)", "UUBL", "UU", "RUBL", "RU", "NUBL", "NU", "PUBL", "PU", "(PU)", "ZU", "7U", "New", "NFE", "LC", "Unreleased"];
 			}
-			if (gen === 'gen4') {
+			if (gen === 'gen4' || gen === 'gen5') {
 				return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "OU", "(OU)", "UUBL", "UU", "NUBL", "NU", "PU", "ZU", "6U", "7U", "8U", "9U", "NFE", "LC"];
 			}
 			if (gen === 'gen1' || gen === 'gen2') {
@@ -933,7 +933,8 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const GayLearnsets = Dex.mod('gen9vgcgay').data.Learnsets;
 	for (const id in GayLearnsets) {
 		const species = Dex.mod('gen9vgcgay').species.get(id);
-		if (species.isNonstandard && !['Unobtainable', 'CAP'].includes(species.isNonstandard)) continue;
+		// Allow non-standard pokemon to allow egg moves
+		// if (species.isNonstandard && !['Unobtainable', 'CAP'].includes(species.isNonstandard)) continue;
 		const learnset = GayLearnsets[id].learnset;
 		BattleTeambuilderTable['gen9vgcgay'].learnsets[id] = {};
 		for (const moveid in learnset) {
