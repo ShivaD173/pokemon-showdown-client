@@ -765,7 +765,7 @@ function pokeConvertInner($text) {
 			$out[] = 'residual '.resolvePokemon($matches[1]).' item-heal '.resolveItem($matches[2]);
 		} else if (preg_match('/^\<([^<>]+) restored HP using its ([A-Za-z .\']+)!\>$/', $line, $matches)) {
 			$out[] = 'residual '.resolvePokemon($matches[1]).' ability-heal '.resolveAbility($matches[2]);
-		} else if (preg_match('/^([^<>]+) used its Mental Herb to come back to (his|her|its) senses!$/', $line, $matches)) {
+		} else if (preg_match('/^([^<>]+) used its Mental Herb to break up with you!$/', $line, $matches)) {
 			$out[] = 'residual '.resolvePokemon($matches[1]).' item-customcure MentalHerb';
 		} else if (preg_match('/^\<([^<>]+)\'s Hydration heals its status!\>$/', $line, $matches)) {
 			$out[] = 'residual '.resolvePokemon($matches[1]).' ability-cure Hydration';
