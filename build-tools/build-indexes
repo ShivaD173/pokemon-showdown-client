@@ -567,7 +567,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (gen === 'gen5') {
 				return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "(Uber)", "OU", "(OU)", "UUBL", "UU", "RUBL", "RU", "NUBL", "NU", "PUBL", "PU", "(PU)", "ZU", "7U", "8U", "9U", "New", "NFE", "LC", "Unreleased"];
 			}
-			if (gen === 'gen4') {
+			if (gen === 'gen4' || gen === 'gen3') {
 				return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "OU", "(OU)", "UUBL", "UU", "NUBL", "NU", "PU", "ZU", "6U", "7U", "8U", "9U", "NFE", "LC"];
 			}
 			if (gen === 'gen1' || gen === 'gen2') {

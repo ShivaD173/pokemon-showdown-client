@@ -1231,7 +1231,7 @@ function pokeConvertInner($text)
 		{
 			$out[] = 'residual '.resolvePokemon($matches[1]).' ability-heal '.resolveAbility($matches[2]);
 		}
-		else if (preg_match('/^([^<>]+) used its Mental Herb to break up with you!$/', $line, $matches))
+		else if (preg_match('/^([^<>]+) used its Mental Herb to come back to (his|her|its) senses!$/', $line, $matches))
 		{
 			$out[] = 'residual '.resolvePokemon($matches[1]).' item-customcure MentalHerb';
 		}
