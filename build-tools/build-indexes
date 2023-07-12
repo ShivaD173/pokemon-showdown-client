@@ -418,7 +418,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
-					return species.tier
+					return species.tier;
 				}
 				if (isVGC || isGay) {
 					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
@@ -555,7 +555,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const tierOrder = (() => {
 			if (isVGCPlat) {
 				// return ["Mythical", "Restricted Legendary","18","17","16","15","14","13","12","11","10","9","8","7","6","5","4","3","2","1"];
-				return ["18","17","16","15","14","13","12","11","10","9","8","7","6","5","4","3","2","1"];
+				return ["18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
 			}
 			if (isVGC || isGay) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
@@ -937,7 +937,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 
 	const GayLearnsets = Dex.mod('gen9vgcgay').data.Learnsets;
 	for (const id in GayLearnsets) {
-		const species = Dex.mod('gen9vgcgay').species.get(id);
+		// const species = Dex.mod('gen9vgcgay').species.get(id);
 		// Allow non-standard pokemon to allow egg moves
 		// if (species.isNonstandard && !['Unobtainable', 'CAP'].includes(species.isNonstandard)) continue;
 		const learnset = GayLearnsets[id].learnset;
