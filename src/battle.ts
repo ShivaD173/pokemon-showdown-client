@@ -1395,6 +1395,11 @@ export class Battle {
 				}
 				this.weatherTimeLeft = (this.gen <= 5 || isExtremeWeather) ? 0 : 8;
 				this.weatherMinTimeLeft = (this.gen <= 5 || isExtremeWeather) ? 0 : 5;
+				// Gay Change
+				if (ability?.name === "Thunderstorm"){
+					this.weatherTimeLeft = 3
+					this.weatherMinTimeLeft = 0
+				}
 			} else if (isExtremeWeather) {
 				this.weatherTimeLeft = 0;
 				this.weatherMinTimeLeft = 0;
@@ -3055,6 +3060,10 @@ export class Battle {
 				if (this.gen > 6) maxTimeLeft = 8;
 			}
 			if (kwArgs.persistent) minTimeLeft += 2;
+			if (fromeffect.name === "Thunderstorm") {
+				minTimeLeft = 3
+				maxTimeLeft = 0
+			}
 			this.addPseudoWeather(effect.name, minTimeLeft, maxTimeLeft);
 
 			switch (effect.id) {
