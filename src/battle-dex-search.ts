@@ -980,6 +980,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		else if (format === 'nu') tierSet = tierSet.slice(slices.NU || slices.RU || slices.UU);
 		else if (format === 'pu') tierSet = tierSet.slice(slices.PU || slices.NU);
 		else if (format === 'zu') tierSet = tierSet.slice(slices.ZU || slices.PU || slices.NU);
+		else if (format === 'su') tierSet = tierSet.slice(slices["SU"]);
+		else if (format === 'ur') tierSet = tierSet.slice(slices["UR"]);
 		else if (format === '6u') tierSet = tierSet.slice(slices["6U"]);
 		else if (format === '7u') tierSet = tierSet.slice(slices["7U"]);
 		else if (format === '8u') tierSet = tierSet.slice(slices["8U"]);
