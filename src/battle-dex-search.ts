@@ -601,9 +601,6 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (format.startsWith("vgcplat")) {
 				this.formatType = 'vgcplat';
 			}
-			// if (format.startsWith("vgcgay")) {
-			// 	this.formatType = 'natdex';
-			// }
 		}
 		if (format === 'vgc2020') this.formatType = 'dlc1doubles';
 		if (format.includes('bdsp')) {
@@ -807,12 +804,13 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		return false;
 	}
 	getTier(pokemon: Species) {
-		if (this.formatType === 'metronome') {
+		if (this.formatType === 'metronome' && !this.format?.startsWith('metronomeffa')) {
 			return pokemon.num >= 0 ? String(pokemon.num) : pokemon.tier;
 		}
 		let table = window.BattleTeambuilderTable;
 		const gen = this.dex.gen;
 		const tableKey = 
+			this.format?.startsWith('metronomeffa') ? 'gen9metronome' :
 			this.formatType?.startsWith('vgcplat') ? 'gen4vgcplat' :
 			this.format.startsWith('vgcgay') ? 'gen9vgcgay' :
 			this.formatType === 'doubles' ? `gen${gen}doubles` :
@@ -912,6 +910,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table['gen' + dex.gen];
 
+		} else if (format.startsWith("metronomeffa")) {
+			table = table['gen9metronome'];
 		} else if (format.startsWith("vgcgay")) {
 			table = table['gen9vgcgay'];
 		} else if (format.startsWith("vgcplat")) {
@@ -1588,7 +1588,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				}
 			}
 		}
-		if (this.formatType === 'metronome') moves = ['metronome'];
+		if (this.formatType === 'metronome' || this.format.startsWith('metronomeffa')) moves = ['metronome'];
 		if (isSTABmons) {
 			for (let id in this.getTable()) {
 				const move = dex.moves.get(id);
