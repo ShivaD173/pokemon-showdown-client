@@ -974,9 +974,9 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			} else {
 				tierSet = tierSet.slice(slices.Regular);
 			}
-		} else if (format === 'ou') tierSet = tierSet.slice(slices.OU);
-		else if (format === 'uu') tierSet = tierSet.slice(slices.UU);
-		else if (format === 'ru') tierSet = tierSet.slice(slices.RU || slices.UU);
+		} else if (format.endsWith('ou')) tierSet = tierSet.slice(slices.OU);
+		else if (format.endsWith('uu')) tierSet = tierSet.slice(slices.UU);
+		else if (format.endsWith('ru')) tierSet = tierSet.slice(slices.RU || slices.UU);
 		else if (format === 'nu') tierSet = tierSet.slice(slices.NU || slices.RU || slices.UU);
 		else if (format === 'pu') tierSet = tierSet.slice(slices.PU || slices.NU);
 		else if (format === 'zu') tierSet = tierSet.slice(slices.ZU || slices.PU || slices.NU);
