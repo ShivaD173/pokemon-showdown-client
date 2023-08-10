@@ -1068,17 +1068,17 @@ class BattleTooltips {
 		}
 
 		// VGC Gay exclusive changes
-		if (item === 'protector'){
+		if (item === 'protector') {
 			if (speciesName === 'Rhyperior' && this.battle.gen === 9) {
 				stats.def = Math.floor(stats.def * 1.5);
 			}
 		}
-		if (item === 'electirizer'){
+		if (item === 'electirizer') {
 			if (speciesName === 'Electivire' && this.battle.gen === 9) {
 				stats.atk = Math.floor(stats.atk * 1.5);
 			}
 		}
-		if (item === 'magmarizer'){
+		if (item === 'magmarizer') {
 			if (speciesName === 'Magmortar' && this.battle.gen === 9) {
 				stats.spa = Math.floor(stats.spa * 1.5);
 			}

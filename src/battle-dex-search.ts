@@ -597,7 +597,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		}
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
-			this.dex = Dex.forFormat(format)
+			this.dex = Dex.forFormat(format);
 			if (format.startsWith("vgcplat")) {
 				this.formatType = 'vgcplat';
 			}
@@ -809,7 +809,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		}
 		let table = window.BattleTeambuilderTable;
 		const gen = this.dex.gen;
-		const tableKey = 
+		const tableKey =
 			this.format?.startsWith('metronomeffa') ? 'gen9metronome' :
 			this.formatType?.startsWith('vgcplat') ? 'gen4vgcplat' :
 			this.format.startsWith('vgcgay') ? 'gen9vgcgay' :

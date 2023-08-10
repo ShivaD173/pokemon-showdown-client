@@ -348,7 +348,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isStadium) genStr += 'stadium' + (genNum > 1 ? genNum : '');
 			if (isVGCPlat) genStr = 'gen4vgcplat';
 			if (isGay) genStr = 'gen9vgcgay';
-			if (isMet) genStr = 'gen9metronome'
+			if (isMet) genStr = 'gen9metronome';
 			return genStr;
 		})();
 		// process.stdout.write("" + gen + (isDoubles ? " doubles" : "") + "... ");
