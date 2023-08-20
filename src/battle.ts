@@ -2605,6 +2605,9 @@ export class Battle {
 				this.scene.resultAnim(poke, 'Ingrained', 'good');
 				break;
 			case 'aquaring':
+			case 'quarry':
+			case 'icerink':
+			case 'smeltery':
 				this.scene.resultAnim(poke, 'Aqua Ring', 'good');
 				break;
 			case 'stockpile1':
