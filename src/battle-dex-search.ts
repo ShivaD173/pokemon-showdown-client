@@ -1680,7 +1680,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				if (move.type !== value) return false;
 				break;
 			case 'category':
-				if (value in ['Physical', 'Special', 'Status']) {
+				if (['Physical', 'Special', 'Status'].includes(value)) {
 					if (move.category !== value) return false;
 				}
 				else {
