@@ -234,7 +234,7 @@
 				ru: "RU",
 				nu: "NU",
 				pu: "PU",
-				zu: "(PU)",
+				zu: "ZU",
 				nfe: "NFE",
 				lc: "LC",
 				cap: "CAP",
@@ -245,7 +245,7 @@
 				nubl: "NUBL",
 				publ: "PUBL"
 			};
-			var tier = {name: tierTable[id]};
+			var tier = {name: tierTable[id] || id.toUpperCase()};
 			return this.renderTierRow(tier, matchStart, matchLength, errorMessage);
 		case 'category':
 			var category = {name: id[0].toUpperCase() + id.substr(1), id: id};
