@@ -1682,6 +1682,16 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			case 'category':
 				if (['Physical', 'Special', 'Status'].includes(value)) {
 					if (move.category !== value) return false;
+				} else if (value === 'Crit') {
+					if (move.critRatio <= 1) return false;
+				} else if (value === 'Secondary') {
+					if (!move.secondaries || move.secondaries.length === 0) return false;
+				} else if (value === 'Healing') {
+					if (!move.heal) return false;
+				} else if (value === 'Priority') {
+					if (move.priority <= 0) return false;
+				} else if (value === 'Multihit') {
+					if (!move.multihit) return false;
 				} else {
 					if (!move.flags.hasOwnProperty(value.toLowerCase())) return false;
 				}
