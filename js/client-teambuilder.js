@@ -1654,7 +1654,16 @@
 			// We fetch this as 'text' and JSON.parse it ourserves in order to have consistent behavior
 			// between the localdev CORS helper and the real jQuery.get function, which would already parse
 			// this into an object based on the content-type header.
-			$.get('https://' + Config.routes.client + '/data/sets/' + format + '.json', {}, function (data) {
+			var path = ""
+			tiers = ['gen1su', 'gen17u', 'gen18u', 'gen19u', 'gen2su', 'gen27u', 'gen28u', 'gen29u', 'gen3su', 'gen37u', 'gen4su', 'gen47u', 'gen48u', 'gen49u', 'gen5su', 'gen58u', 'gen67u', 'gen7su', 'gen8su', 'gen9su', 'gen9metronomeffaou', 'gen9metronomeffauu', 'gen9metronomeffaru', 'gen9vgcgay', 'gen9vgcplat']
+			if (tiers.includes(format)) {
+				path = "http://73.191.22.186:8001/data/sets/" + format + '.json';
+				// path = "http://localhost:8001/data/sets/" + format + '.json';
+			}
+			else {
+				path = 'https://' + Config.routes.client + '/data/sets/' + format + '.json'
+			}
+			$.get(path, {}, function (data) {
 				try {
 					self.smogonSets[format] = JSON.parse(data);
 				} catch (e) {
@@ -1687,7 +1696,7 @@
 			var species = this.curSet.species;
 
 			var setName = this.$(button).text();
-			var smogonSet = formatSets['dex'][species][setName] || formatSets['stats'][species][setName];
+			var smogonSet = (formatSets['dex'][species] && formatSets['dex'][species][setName]) || (formatSets['stats'][species] && formatSets['stats'][species][setName]);
 			var curSet = $.extend({}, this.curSet, smogonSet);
 
 			var text = Storage.exportTeam([curSet], this.curTeam.gen);
