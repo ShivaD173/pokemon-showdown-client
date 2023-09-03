@@ -1692,6 +1692,8 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					if (move.priority <= 0) return false;
 				} else if (value === 'Multihit') {
 					if (!move.multihit) return false;
+				} else if (value === 'Spread') {
+					if (!['allAdjacent', 'allAdjacentFoes'].includes(move.target)) return false;
 				} else {
 					if (!move.flags.hasOwnProperty(value.toLowerCase())) return false;
 				}
