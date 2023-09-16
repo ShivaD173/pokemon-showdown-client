@@ -1182,6 +1182,16 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				}
 			}
 		}
+
+		const overrideItemDesc = {};
+		BattleTeambuilderTable[mod].overrideItemDesc = overrideItemDesc;
+		for (const id in modData.Items) {
+			const curEntry = modDex.items.get(id);
+			const nextEntry = parentDex.items.get(id);
+			if ((curEntry.shortDesc || curEntry.desc) !== (nextEntry.shortDesc || nextEntry.desc)) {
+				overrideItemDesc[id] = (curEntry.shortDesc || curEntry.desc);
+			}
+		}
 	}
 
 	buf += `exports.BattleTeambuilderTable = JSON.parse('${JSON.stringify(BattleTeambuilderTable).replace(/['\\]/g, "\\$&")}');\n\n`;

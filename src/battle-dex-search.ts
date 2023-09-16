@@ -1084,7 +1084,17 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 				if (species.eggGroups[0] !== value && species.eggGroups[1] !== value) return false;
 				break;
 			case 'tier':
-				if (this.getTier(species) !== value) return false;
+				if (value === "NFE") {
+					const isNFE = this.dex.species.get(species.name).evos?.some(evo => {
+						const evoSpecies = this.dex.species.get(evo);
+						return !evoSpecies.isNonstandard ||
+								evoSpecies.isNonstandard === this.dex.species.get(species.name)?.isNonstandard ||
+								// Pokemon with Hisui evolutions
+								evoSpecies.isNonstandard === "Unobtainable";
+					});
+					if (!isNFE) return false;
+				}
+				else if (this.getTier(species) !== value) return false;
 				break;
 			case 'ability':
 				if (!Dex.hasAbility(species, value)) return false;
