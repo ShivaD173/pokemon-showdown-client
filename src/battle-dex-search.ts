@@ -611,9 +611,10 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			if (format.startsWith("vgcplat")) {
 				this.formatType = 'vgcplat';
 			}
-			if (format === 'vgc2020') this.formatType = 'ssdlc1doubles';
-			if (format === 'vgc2023regulationd') this.formatType = 'predlcdoubles';
 		}
+		if (format.startsWith('vgc')) this.formatType = 'doubles';
+		if (format === 'vgc2020') this.formatType = 'ssdlc1doubles';
+		if (format === 'vgc2023regulationd') this.formatType = 'predlcdoubles';
 		if (format.includes('bdsp')) {
 			if (format.includes('doubles')) {
 				this.formatType = 'bdspdoubles';
@@ -1593,6 +1594,12 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						) {
 							continue;
 						}
+					}
+					if (
+						this.formatType?.includes('predlc') && this.formatType !== 'predlcnatdex' &&
+						BattleTeambuilderTable['gen9predlc']?.nonstandardMoves.includes(moveid)
+					) {
+						continue;
 					}
 					if (
 						this.formatType?.includes('predlc') && this.formatType !== 'predlcnatdex' &&
