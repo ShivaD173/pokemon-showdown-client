@@ -1094,8 +1094,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 								evoSpecies.isNonstandard === "Unobtainable";
 					});
 					if (!isNFE) return false;
-				}
-				else if (this.getTier(species) !== value) return false;
+				} else if (this.getTier(species) !== value) return false;
 				break;
 			case 'ability':
 				if (!Dex.hasAbility(species, value)) return false;

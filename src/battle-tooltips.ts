@@ -1149,8 +1149,15 @@ class BattleTooltips {
 							if (!ally || ally.fainted) continue;
 							let allyAbility = this.getAllyAbility(ally);
 							if (allyAbility === 'Flower Gift' && (ally.getSpecies().baseSpecies === 'Cherrim' || this.battle.gen <= 4)) {
-								stats.atk = Math.floor(stats.atk * 1.5);
-								stats.spd = Math.floor(stats.spd * 1.5);
+								if (this.battle.dex.modid.includes('vgcgay')) {
+									stats.atk = Math.floor(stats.atk * 1.3);
+									stats.def = Math.floor(stats.atk * 1.3);
+									stats.spa = Math.floor(stats.atk * 1.3);
+									stats.spd = Math.floor(stats.atk * 1.3);
+								} else {
+									stats.atk = Math.floor(stats.atk * 1.5);
+									stats.spd = Math.floor(stats.spd * 1.5);
+								}
 							}
 						}
 					}
