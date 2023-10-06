@@ -1613,7 +1613,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						moves.push(
 							'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
 						);
-						if (this.format.startsWith('vgcgay')) moves.push('hiddenpowernormal', 'hiddenpowerfairy')
+						if (this.format.startsWith('vgcgay')) moves.push('hiddenpowernormal', 'hiddenpowerfairy');
 					}
 				}
 			}
@@ -1733,8 +1733,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					if (move.critRatio <= 1) return false;
 				} else if (value === 'Secondary') {
 					if (!move.secondaries || move.secondaries.length === 0) return false;
-				} else if (value === 'Healing') {
-					if (!move.heal) return false;
 				} else if (value === 'Priority') {
 					if (move.priority <= 0) return false;
 				} else if (value === 'Multihit') {
