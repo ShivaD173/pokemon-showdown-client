@@ -1009,6 +1009,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		else if (format === 'pu') tierSet = tierSet.slice(slices.PU || slices.NU);
 		else if (format === 'zu') tierSet = tierSet.slice(slices.ZU || slices.PU || slices.NU);
 		else if (format === 'su') tierSet = tierSet.slice(slices["SU"]);
+		else if (format === 'iu') tierSet = tierSet.slice(slices["IU"]);
 		else if (format === 'ur') tierSet = tierSet.slice(slices["UR"]);
 		else if (format === '6u') tierSet = tierSet.slice(slices["6U"]);
 		else if (format === '7u') tierSet = tierSet.slice(slices["7U"]);
@@ -1613,7 +1614,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						moves.push(
 							'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
 						);
-						if (this.format.startsWith('vgcgay')) moves.push('hiddenpowernormal', 'hiddenpowerfairy');
+						if (this.format.startsWith('vgcgay')) moves.push('hiddenpowerfairy');
 					}
 				}
 			}
