@@ -57,7 +57,8 @@
 			buf += '</div>';
 
 			buf += '<div class="menugroup"><p><button class="button mainmenu4 onlineonly disabled" name="joinRoom" value="battles">Watch a battle</button></p>';
-			buf += '<p><button class="button mainmenu5 onlineonly disabled" name="finduser">Find a user</button></p></div>';
+			buf += '<p><button class="button mainmenu5 onlineonly disabled" name="finduser">Find a user</button></p>';
+			buf += '<p><button class="button mainmenu6 onlineonly disabled" name="send" value="/friends">Friends</button></p></div>';
 
 			this.$('.mainmenu').html(buf);
 
@@ -262,7 +263,7 @@
 				if (formatName) {
 					buf += '<p><label class="label">' + (teamFormat ? 'Format' : 'Game') + ':</label>' + this.renderFormats(formatName, true) + '</p>';
 				}
-				buf += '<p class="buttonbar"><button name="cancelChallenge">Cancel</button></p></form>';
+				buf += '<p class="buttonbar"><button name="cancelChallenge" class="button">Cancel</button></p></form>';
 				$challenge.html(buf);
 				return;
 			}
@@ -277,7 +278,7 @@
 				buf += '<p><label class="label">Team:</label>' + this.renderTeams(teamFormat) + '</p>';
 				buf += '<p><label class="checkbox"><input type="checkbox" name="private" ' + (Storage.prefs('disallowspectators') ? 'checked' : '') + ' /> <abbr title="You can still invite spectators by giving them the URL or using the /invite command">Don\'t allow spectators</abbr></label></p>';
 			}
-			buf += '<p class="buttonbar"><button name="acceptChallenge"><strong>' + BattleLog.escapeHTML(acceptButtonLabel) + '</strong></button> <button type="button" name="rejectChallenge">' + BattleLog.escapeHTML(rejectButtonLabel) + '</button></p></form>';
+			buf += '<p class="buttonbar"><button name="acceptChallenge" class="button"><strong>' + BattleLog.escapeHTML(acceptButtonLabel) + '</strong></button> <button type="button" name="rejectChallenge" class="button">' + BattleLog.escapeHTML(rejectButtonLabel) + '</button></p></form>';
 			$challenge.html(buf);
 		},
 
@@ -733,10 +734,10 @@
 				for (var roomid in this.games) {
 					var name = this.games[roomid];
 					if (name.slice(-1) === '*') name = name.slice(0, -1);
-					buf += '<div><a href="/' + toRoomid(roomid) + '" class="ilink" style="text-align: center">' + BattleLog.escapeHTML(name) + '</a></div>';
+					buf += '<div><a href="/' + toRoomid(roomid) + '" class="blocklink" style="text-align: center">' + BattleLog.escapeHTML(name) + '</a></div>';
 				}
 				buf += '</div>';
-				if (!$searchGroup.is(':visible')) buf += '<p class="buttonbar"><button name="showSearchGroup">Add game</button></p>';
+				if (!$searchGroup.is(':visible')) buf += '<p class="buttonbar"><button name="showSearchGroup" class="button">Add game</button></p>';
 				buf += '</form>';
 				this.$gamesGroup.html(buf);
 			} else {
@@ -772,7 +773,7 @@
 
 				var buf = '<form class="battleform"><p>Waiting for ' + BattleLog.escapeHTML(name) + '...</p>';
 				buf += '<p><label class="label">Format:</label>' + this.renderFormats(challenge.format, true) + '</p>';
-				buf += '<p class="buttonbar"><button name="cancelChallenge">Cancel</button></p></form>';
+				buf += '<p class="buttonbar"><button name="cancelChallenge" class="button">Cancel</button></p></form>';
 
 				$challenge.html(buf);
 				if (challenge.format.substr(0, 4) === 'gen5') atLeastOneGen5 = true;
@@ -796,7 +797,7 @@
 						buf += '<p><label class="label">Format:</label>' + self.renderFormats(format, true) + '</p>';
 						buf += '<p><label class="label">Team:</label>' + self.renderTeams(format) + '</p>';
 						buf += '<p><label class="checkbox"><input type="checkbox" name="private" ' + (Storage.prefs('disallowspectators') ? 'checked' : '') + ' /> <abbr title="You can still invite spectators by giving them the URL or using the /invite command">Don\'t allow spectators</abbr></label></p>';
-						buf += '<p class="buttonbar"><button name="acceptChallenge"><strong>Accept</strong></button> <button type="button" name="rejectChallenge">Reject</button></p></form>';
+						buf += '<p class="buttonbar"><button name="acceptChallenge" class="button"><strong>Accept</strong></button> <button type="button" name="rejectChallenge" class="button">Reject</button></p></form>';
 						$challenge.html(buf);
 						if (format.substr(0, 4) === 'gen5') atLeastOneGen5 = true;
 					}
@@ -810,7 +811,7 @@
 								$challenge.remove();
 							} else {
 								// Someone was challenging you, but cancelled their challenge
-								$challenge.html('<form class="battleform"><p>The challenge was cancelled.</p><p class="buttonbar"><button name="dismissChallenge">OK</button></p></form>');
+								$challenge.html('<form class="battleform"><p>The challenge was cancelled.</p><p class="buttonbar"><button name="dismissChallenge" class="button">OK</button></p></form>');
 							}
 						} else if ($challenge.find('button[name=cancelChallenge]').length && challengeToUserid !== userid) {
 							// You were challenging someone else, and they either accepted
@@ -840,7 +841,7 @@
 				var $searchForm = $('.mainmenu button.big').closest('form');
 				$searchForm.find('button.big').html('<em>Disconnected</em>').addClass('disabled');
 				$searchForm.find('.mainmenu p.cancel').remove();
-				$searchForm.append('<p class="cancel buttonbar"><button name="reconnect">Reconnect</button></p>');
+				$searchForm.append('<p class="cancel buttonbar"><button name="reconnect" class="button">Reconnect</button></p>');
 				this.$('button.onlineonly').addClass('disabled');
 				return;
 			}
@@ -896,9 +897,10 @@
 			buf += '<p><label class="label">Format:</label>' + this.renderFormats(format) + '</p>';
 			buf += '<p><label class="label">Team:</label>' + this.renderTeams(format) + '</p>';
 			buf += '<p><label class="checkbox"><input type="checkbox" name="private" ' + (Storage.prefs('disallowspectators') ? 'checked' : '') + ' /> <abbr title="You can still invite spectators by giving them the URL or using the /invite command">Don\'t allow spectators</abbr></label></p>';
-			buf += '<p' + (!(format && format.includes('vgc')) ? ' class="hidden">' : '>');
-			buf += '<label class="checkbox"><input type="checkbox" name="bestof" /> <abbr title="Start a team-locked best-of-3 series">Best-of-3</abbr></label></p>';
-			buf += '<p class="buttonbar"><button name="makeChallenge"><strong>Challenge</strong></button> <button type="button" name="dismissChallenge">Cancel</button></p></form>';
+			var bestOfDefault = format && BattleFormats[format] ? BattleFormats[format].bestOfDefault : false;
+			buf += '<p' + (!bestOfDefault ? ' class="hidden">' : '>');
+			buf += '<label class="checkbox"><input type="checkbox" name="bestof" /> <abbr title="Start a team-locked best-of-n series">Best-of-<input name="bestofvalue" type="number" min="3" max="9" step="2" value="3" style="width: 28px; vertical-align: initial;"></abbr></label></p>';
+			buf += '<p class="buttonbar"><button name="makeChallenge" class="button"><strong>Challenge</strong></button> <button type="button" name="dismissChallenge" class="button">Cancel</button></p></form>';
 			$challenge.html(buf);
 		},
 		acceptChallenge: function (i, target) {
@@ -942,11 +944,12 @@
 			var teamIndex = $pmWindow.find('button[name=team]').val();
 			var privacy = this.adjustPrivacy($pmWindow.find('input[name=private]').is(':checked'));
 
-			var bestof = $pmWindow.find('input[name=bestof]').is(':checked');
-			var hasCustomRules = format.includes('@@@');
-			if (bestof) {
+			var bestOf = $pmWindow.find('input[name=bestof]').is(':checked');
+			var bestOfValue = $pmWindow.find('input[name=bestofvalue]').val();
+			if (bestOf && bestOfValue) {
+				var hasCustomRules = format.includes('@@@');
 				format += hasCustomRules ? ', ' : '@@@';
-				format += 'Best of = 3';
+				format += 'Best of = ' + bestOfValue;
 			}
 
 			var team = null;
@@ -960,7 +963,7 @@
 
 			var buf = '<form class="battleform pending"><p>Challenging ' + BattleLog.escapeHTML(name) + '...</p>';
 			buf += '<p><label class="label">Format:</label>' + this.renderFormats(format, true) + '</p>';
-			buf += '<p class="buttonbar"><button name="cancelChallenge">Cancel</button></p></form>';
+			buf += '<p class="buttonbar"><button name="cancelChallenge" class="button">Cancel</button></p></form>';
 
 			$(target).closest('.challenge').html(buf);
 			app.sendTeam(team, function () {
@@ -1103,7 +1106,7 @@
 			$formatButton.addClass('preselected')[0].disabled = true;
 			$teamButton.addClass('preselected')[0].disabled = true;
 			$searchForm.find('button.big').html('<strong><i class="fa fa-refresh fa-spin"></i> Connecting...</strong>').addClass('disabled');
-			$searchForm.append('<p class="cancel buttonbar"><button name="cancelSearch">Cancel</button></p>');
+			$searchForm.append('<p class="cancel buttonbar"><button name="cancelSearch" class="button">Cancel</button></p>');
 
 			var self = this;
 			app.sendTeam(team, function () {
@@ -1174,7 +1177,7 @@
 				var roomid = toRoomid(target);
 				return [
 					'<div class="chat">' + timestamp + '<em>' + clickableName + ' invited you to join the room "' + roomid + '"</em></div>',
-					'<div class="notice"><button name="joinRoom" value="' + roomid + '">Join ' + roomid + '</button></div>'
+					'<div class="notice"><button name="joinRoom" value="' + roomid + '" class="button">Join ' + roomid + '</button></div>'
 				];
 			case 'announce':
 				return '<div class="chat chatmessage-' + toID(name) + hlClass + mineClass + '">' + timestamp + '<strong style="' + color + '">' + clickableName + ':</strong> <span class="message-announce">' + BattleLog.parseMessage(target) + '</span></div>';
@@ -1246,8 +1249,7 @@
 			this.selectType = data.selectType;
 			if (!this.selectType) this.selectType = (this.sourceEl.closest('form').data('search') ? 'search' : 'challenge');
 
-
-			var html = '<p><ul class="popupmenu"><li><input name="search" placeholder="Search formats" value="' + this.search + '"/>';
+			var html = '<p><ul class="popupmenu"><li><input name="search" placeholder="Search formats" value="' + this.search + '" class="textbox" />';
 			html += '</li></ul></p><span name="formats">';
 			html += this.renderFormats();
 			html += '</span><div style="clear:left"></div><p></p>';
@@ -1259,7 +1261,7 @@
 			var bufs = [];
 			var curBuf = 0;
 			if (this.selectType === 'watch' && !this.search) {
-				bufs[1] = '<li><button name="selectFormat" value=""' + (curFormat === '' ? ' class="sel"' : '') + '>(All formats)</button></li>';
+				bufs[1] = '<li><button name="selectFormat" value="" class="option' + (curFormat === '' ? ' cur' : '') + '">(All formats)</button></li>';
 			}
 
 			for (var i in this.starred) {
@@ -1277,7 +1279,7 @@
 				var formatName = BattleLog.escapeFormat(BattleFormats[i].id);
 				bufs[1] += (
 					'<li><button name="selectFormat" value="' + i +
-					'"' + (curFormat === i ? ' class="sel"' : '') + '>' + formatName +
+					'" class="option' + (curFormat === i ? ' cur' : '') + '">' + formatName +
 					'<i class="fa fa-star" style="float: right; color: #FFD700; text-shadow: 0 0 1px #000;"></i></button></li>'
 				);
 			}
@@ -1313,7 +1315,7 @@
 				formatName = formatName.replace('[Gen 7 ', '[');
 				bufs[curBuf] += (
 					'<li><button name="selectFormat" value="' + i +
-					'"' + (curFormat === i ? ' class="sel"' : '') + '>' + formatName +
+					'" class="option' + (curFormat === i ? ' cur' : '') + '">' + formatName +
 					'<i class="fa fa-star subtle" style="float: right;"></i></button></li>'
 				);
 			}
@@ -1381,10 +1383,13 @@
 				if ($teamButton.length) $teamButton.replaceWith(app.rooms[''].renderTeams(format));
 
 				var $bestOfCheckbox = this.sourceEl.closest('form').find('input[name=bestof]');
-				if ($bestOfCheckbox) {
+				var $bestOfValueInput = this.sourceEl.closest('form').find('input[name=bestofvalue]');
+				if ($bestOfCheckbox && $bestOfValueInput) {
 					var $parentTag = $bestOfCheckbox.parent().parent();
-					if (format.includes('vgc')) {
+					var bestOfDefault = BattleFormats[format] && BattleFormats[format].bestOfDefault;
+					if (bestOfDefault) {
 						$parentTag.removeClass('hidden');
+						$bestOfValueInput.val(3);
 					} else {
 						$parentTag.addClass('hidden');
 						$bestOfCheckbox.prop('checked', false);
@@ -1439,12 +1444,12 @@
 				var count = 0;
 				if (teamFormat) {
 					bufs[curBuf] = '<li><h3 style="margin-bottom: 5px;">' + BattleLog.escapeFormat(teamFormat) + ' teams</h3></li>';
-					bufs[curBuf] += '<li style="padding-bottom: 5px;"><input type="checkbox"' + (this.folderToggleOn ? ' checked' : '') + '><strong>Group by folders</strong></button></li>';
+					bufs[curBuf] += '<li style="padding-bottom: 5px;"><label class="checkbox"><input type="checkbox"' + (this.folderToggleOn ? ' checked' : '') + '> Group by folders</label></li>';
 					for (var i = 0; i < teams.length; i++) {
 						if ((!teams[i].format && !teamFormat) || teams[i].format === teamFormat) {
 							var selected = (i === curTeam);
 							if (!this.folderToggleOn) {
-								bufs[curBuf] += '<li><button name="selectTeam" value="' + i + '"' + (selected ? ' class="sel"' : '') + '>' + BattleLog.escapeHTML(teams[i].name) + '</button></li>';
+								bufs[curBuf] += '<li><button name="selectTeam" value="' + i + '" class="option' + (selected ? 'sel' : '') + '">' + BattleLog.escapeHTML(teams[i].name) + '</button></li>';
 								count++;
 								if (count % bufBoundary === 0 && curBuf < 4) curBuf++;
 							} else {
@@ -1469,17 +1474,17 @@
 								}
 							}
 							if (!exists) {
-								bufs[curBuf] += '<li><button name="selectFolder" class="folderButtonOpen folderButtonOver" value="' + key + '"><i class="fa fa-folder-open" style="margin-right: 7px; margin-left: 4px;"></i>' + BattleLog.escapeHTML(key) + '</button></li>';
+								bufs[curBuf] += '<li><button name="selectFolder" class="button" value="' + key + '"><i class="fa fa-folder-open" style="margin-right: 7px; margin-left: 4px;"></i>' + BattleLog.escapeHTML(key) + '</button></li>';
 								count++;
 								if (count % bufBoundary === 0 && curBuf < 4) curBuf++;
 								for (var j = 0; j < folderData.length; j++) {
 									var selected = (folderData[j].id === curTeam);
-									bufs[curBuf] += '<li><button name="selectTeam" value="' + folders[key][j].id + '"' + (selected ? ' class="sel"' : '') + '>' + BattleLog.escapeHTML(folderData[j].name) + '</button></li>';
+									bufs[curBuf] += '<li><button name="selectTeam" value="' + folders[key][j].id + '" class="option' + (selected ? ' cur' : '') + '">' + BattleLog.escapeHTML(folderData[j].name) + '</button></li>';
 									count++;
 									if (count % bufBoundary === 0 && curBuf < 4) curBuf++;
 								}
 							} else {
-								bufs[curBuf] += '<li><button name="selectFolder" class="folderButton" value="' + key + '"><i class="fa fa-folder" style="margin-right: 7px; margin-left: 4px;"></i>' + BattleLog.escapeHTML(key) + '</button></li>';
+								bufs[curBuf] += '<li><button name="selectFolder" class="button" value="' + key + '"><i class="fa fa-folder" style="margin-right: 7px; margin-left: 4px;"></i>' + BattleLog.escapeHTML(key) + '</button></li>';
 								count++;
 								if (count % bufBoundary === 0 && curBuf < 4) curBuf++;
 							}
@@ -1492,19 +1497,18 @@
 							}
 						}
 						if (!isNoFolder) {
-							bufs[curBuf] += '<li><button name="selectFolder" class="folderButtonOpen folderButtonOver" value="(No Folder)"><i class="fa fa-folder-open" style="margin-right: 7px; margin-left: 4px;"></i>(No Folder)</button></li>';
+							bufs[curBuf] += '<li><button name="selectFolder" class="button" value="(No Folder)"><i class="fa fa-folder-open" style="margin-right: 7px; margin-left: 4px;"></i>(No Folder)</button></li>';
 						} else {
-							bufs[curBuf] += '<li><button name="selectFolder" class="folderButton" value="(No Folder)"><i class="fa fa-folder" style="margin-right: 7px; margin-left: 4px;"></i>(No Folder)</button></li>';
+							bufs[curBuf] += '<li><button name="selectFolder" class="button" value="(No Folder)"><i class="fa fa-folder" style="margin-right: 7px; margin-left: 4px;"></i>(No Folder)</button></li>';
 							count++;
 							if (count % bufBoundary === 0 && count != 0 && curBuf < 4) curBuf++;
 						}
-						console.log(teamFormat);
 						if (!isNoFolder) {
 							for (var i = 0; i < teams.length; i++) {
 								if ((!teams[i].format && !teamFormat) || teams[i].format === teamFormat) {
 									var selected = (i === curTeam);
 									if (teams[i].folder === "") {
-										bufs[curBuf] += '<li><button name="selectTeam" value="' + i + '"' + (selected ? ' class="sel"' : '') + '>' + BattleLog.escapeHTML(teams[i].name) + '</button></li>';
+										bufs[curBuf] += '<li><button name="selectTeam" value="' + i + '" class="option' + (selected ? ' cur' : '') + '">' + BattleLog.escapeHTML(teams[i].name) + '</button></li>';
 										count++;
 										if (count % bufBoundary === 0 && curBuf < 4) curBuf++;
 									}
@@ -1524,7 +1528,7 @@
 					for (var i = 0; i < teams.length; i++) {
 						if (teamFormat && teams[i].format === teamFormat) continue;
 						var selected = (i === curTeam);
-						bufs[curBuf] += '<li><button name="selectTeam" value="' + i + '"' + (selected ? ' class="sel"' : '') + '>' + BattleLog.escapeHTML(teams[i].name) + '</button></li>';
+						bufs[curBuf] += '<li><button name="selectTeam" value="' + i + '" class="option' + (selected ? ' cur' : '') + '">' + BattleLog.escapeHTML(teams[i].name) + '</button></li>';
 						count++;
 						if (count % bufBoundary === 0 && curBuf < 4) curBuf++;
 					}
@@ -1544,7 +1548,7 @@
 			}
 		},
 		events: {
-			'click [type="checkbox"]': 'foldersToggle',
+			'click input[type=checkbox]': 'foldersToggle',
 		},
 		moreTeams: function () {
 			this.close();

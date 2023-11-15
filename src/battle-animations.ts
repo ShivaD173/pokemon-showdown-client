@@ -237,7 +237,7 @@ export class BattleScene implements BattleSceneStub {
 		this.stopAnimation();
 		this.updateBgm();
 		if (!this.battle.started) {
-			this.$frame.append('<div class="playbutton"><button name="play" class="button"><i class="fa fa-play"></i> Play</button><br /><br /><button name="play-muted" class="startsoundchooser button" style="font-size:10pt">Play (music off)</button></div>');
+			this.$frame.append('<div class="playbutton"><button name="play" class="button"><i class="fa fa-play"></i> Play</button><br /><br /><button name="play-muted" class="startsoundchooser button" style="font-size:10pt">Play (sound off)</button></div>');
 			this.$frame.find('div.playbutton button[name=play-muted]').click(() => {
 				this.setMute(true);
 				this.battle.play();
@@ -263,7 +263,10 @@ export class BattleScene implements BattleSceneStub {
 	addSprite(sprite: PokemonSprite) {
 		if (sprite.$el) this.$sprites[+sprite.isFrontSprite].append(sprite.$el);
 	}
-	showEffect(effect: string | SpriteData, start: ScenePos, end: ScenePos, transition: string, after?: string) {
+	showEffect(
+		effect: string | SpriteData, start: ScenePos, end: ScenePos,
+		transition: string, after?: string, additionalCss?: JQuery.PlainObject
+	) {
 		if (typeof effect === 'string') effect = BattleEffects[effect] as SpriteData;
 		if (!start.time) start.time = 0;
 		if (!end.time) end.time = start.time + 500;
@@ -279,6 +282,7 @@ export class BattleScene implements BattleSceneStub {
 
 		let $effect = $('<img src="' + effect.url + '" style="display:block;position:absolute" />');
 		this.$fx.append($effect);
+		if (additionalCss) $effect.css(additionalCss);
 		$effect = this.$fx.children().last();
 
 		if (start.time) {
@@ -792,7 +796,7 @@ export class BattleScene implements BattleSceneStub {
 		let newBGNum = 0;
 		for (let siden = 0; siden < 2 || (this.battle.gameType === 'multi' && siden < 4); siden++) {
 			let side = this.battle.sides[siden];
-			const spriteIndex = +this.battle.sidesSwitched ^ (siden % 2);
+			const spriteIndex = +this.battle.viewpointSwitched ^ (siden % 2);
 			let textBuf = '';
 			let buf = '';
 			let buf2 = '';
@@ -1639,7 +1643,11 @@ export class BattleScene implements BattleSceneStub {
 	}
 	destroy() {
 		this.log.destroy();
-		if (this.$frame) this.$frame.empty();
+		if (this.$frame) {
+			this.$frame.empty();
+			// listeners set by BattleTooltips
+			this.$frame.off();
+		}
 		if (this.bgm) {
 			this.bgm.destroy();
 			this.bgm = null;
@@ -2980,6 +2988,10 @@ const BattleEffects: {[k: string]: SpriteData} = {
 	},
 	flareball: {
 		url: 'flareball.png',
+		w: 100, h: 100,
+	},
+	moon: {
+		url: 'moon.png', // by Kalalokki
 		w: 100, h: 100,
 	},
 	pokeball: {

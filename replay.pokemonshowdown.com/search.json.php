@@ -8,15 +8,15 @@ $byRating = isset($_REQUEST['rating']);
 $isPrivate = isset($_REQUEST['private']);
 
 header('Content-Type: application/json');
-if (!$isPrivate) header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: *');
 
 require_once 'replays.lib.php';
-include_once '../lib/ntbb-session.lib.php';
 
-$username = $users->userid($username);
-$isPrivateAllowed = ($username === $curuser['userid'] || $curuser['userid'] === 'zarel');
-if ($isPrivate && !$isPrivateAllowed) {
-	die('"ERROR: access denied"');
+$username = $Replays->toID($username);
+$isPrivateAllowed = false;
+if ($isPrivate) {
+	header('HTTP/1.1 400 Bad Request');
+	die('"ERROR: you cannot access private replays with the public API"');
 }
 
 $page = intval($_REQUEST['page'] ?? 0);
