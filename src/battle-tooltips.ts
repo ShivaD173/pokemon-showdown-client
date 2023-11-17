@@ -1141,7 +1141,10 @@ class BattleTooltips {
 						stats.spa = Math.floor(stats.spa * 1.5);
 					}
 					if (ability === 'orichalcumpulse') {
-						stats.atk = Math.floor(stats.atk * 1.3);
+						stats.atk = Math.floor(stats.atk * 1.333333);
+						if (this.battle.dex.modid.includes('vgcgay')) {
+							stats.spa = Math.floor(stats.spa * 1.333333);
+						}
 					}
 					let allyActive = clientPokemon?.side.active;
 					if (allyActive) {
@@ -1151,9 +1154,9 @@ class BattleTooltips {
 							if (allyAbility === 'Flower Gift' && (ally.getSpecies().baseSpecies === 'Cherrim' || this.battle.gen <= 4)) {
 								if (this.battle.dex.modid.includes('vgcgay')) {
 									stats.atk = Math.floor(stats.atk * 1.3);
-									stats.def = Math.floor(stats.atk * 1.3);
-									stats.spa = Math.floor(stats.atk * 1.3);
-									stats.spd = Math.floor(stats.atk * 1.3);
+									stats.def = Math.floor(stats.def * 1.3);
+									stats.spa = Math.floor(stats.spa * 1.3);
+									stats.spd = Math.floor(stats.spd * 1.3);
 								} else {
 									stats.atk = Math.floor(stats.atk * 1.5);
 									stats.spd = Math.floor(stats.spd * 1.5);
@@ -1207,6 +1210,10 @@ class BattleTooltips {
 		}
 		if (ability === 'grasspelt' && this.battle.hasPseudoWeather('Grassy Terrain')) {
 			stats.def = Math.floor(stats.def * 1.5);
+			if (this.battle.dex.modid.includes('vgcgay')) {
+				stats.atk = Math.floor(stats.atk * 1.5);
+				stats.spd = Math.floor(stats.spd * 1.5);
+			}
 		}
 		if (this.battle.hasPseudoWeather('Electric Terrain')) {
 			if (ability === 'surgesurfer') {
@@ -1842,7 +1849,7 @@ class BattleTooltips {
 			}
 		}
 		// Moves which have base power changed according to weight
-		if (['lowkick', 'grassknot', 'heavyslam', 'heatcrash'].includes(move.id)) {
+		if (['lowkick', 'grassknot', 'heavyslam', 'heatcrash', 'slushcrush'].includes(move.id)) {
 			let isGKLK = ['lowkick', 'grassknot'].includes(move.id);
 			if (target) {
 				let targetWeight = target.getWeightKg();
@@ -1885,7 +1892,11 @@ class BattleTooltips {
 			value.abilityModify(1.5, "Flare Boost");
 		}
 		if (move.flags['punch']) {
-			value.abilityModify(1.2, 'Iron Fist');
+			if (this.battle.dex.modid.includes('vgcgay')) {
+				value.abilityModify(1.4, 'Iron Fist');
+			} else {
+				value.abilityModify(1.2, 'Iron Fist');
+			}
 		}
 		if (move.flags['pulse']) {
 			value.abilityModify(1.5, "Mega Launcher");
@@ -1900,7 +1911,7 @@ class BattleTooltips {
 			value.abilityModify(1.5, "Toxic Boost");
 		}
 		if (this.battle.gen > 2 && serverPokemon.status === 'brn' && move.id !== 'facade' && move.category === 'Physical') {
-			if (!value.tryAbility("Guts")) value.modify(0.5, 'Burn');
+			if (!value.tryAbility("Guts") && !value.tryAbility("The Flock")) value.modify(0.5, 'Burn');
 		}
 		if (['Rock', 'Ground', 'Steel'].includes(moveType) && this.battle.weather === 'sandstorm') {
 			if (value.tryAbility("Sand Force")) value.weatherModify(1.3, "Sandstorm", "Sand Force");
@@ -1912,21 +1923,39 @@ class BattleTooltips {
 			value.abilityModify(1.3, "Tough Claws");
 		}
 		if (move.flags['sound']) {
-			value.abilityModify(1.3, "Punk Rock");
+			if (this.battle.dex.modid.includes('vgcgay')) {
+				value.abilityModify(1.5, "Punk Rock");
+			} else {
+				value.abilityModify(1.3, "Punk Rock");
+			}
 		}
 		if (move.flags['slicing']) {
 			value.abilityModify(1.5, "Sharpness");
 		}
 		for (let i = 1; i <= 5 && i <= pokemon.side.faintCounter; i++) {
 			if (pokemon.volatiles[`fallen${i}`]) {
-				value.abilityModify(1 + 0.1 * i, "Supreme Overlord");
+				if (this.battle.dex.modid.includes('vgcgay')) {
+					value.abilityModify(1 + 0.15 * i, "Supreme Overlord");
+				} else {
+					value.abilityModify(1 + 0.1 * i, "Supreme Overlord");
+				}
 			}
 		}
 		if (target) {
 			if (["MF", "FM"].includes(pokemon.gender + target.gender)) {
-				value.abilityModify(0.75, "Rivalry");
+				if (this.battle.dex.modid.includes('vgcgay')) {
+					value.abilityModify(0.9, "Rivalry");
+				} else {
+					value.abilityModify(0.75, "Rivalry");
+				}
 			} else if (["MM", "FF"].includes(pokemon.gender + target.gender)) {
-				value.abilityModify(1.25, "Rivalry");
+				if (this.battle.dex.modid.includes('vgcgay')) {
+					value.abilityModify(1.5, "Rivalry");
+				} else {
+					value.abilityModify(1.25, "Rivalry");
+				}
+			} else if (target.gender === 'N') {
+				value.abilityModify(1.3, "Transphobia");
 			}
 		}
 		const noTypeOverride = [
@@ -1948,7 +1977,11 @@ class BattleTooltips {
 			}
 		}
 		if (move.recoil || move.hasCrashDamage) {
-			value.abilityModify(1.2, 'Reckless');
+			if (this.battle.dex.modid.includes('vgcgay')) {
+				value.abilityModify(1.3, 'Reckless');
+			} else {
+				value.abilityModify(1.2, 'Reckless');
+			}
 		}
 
 		if (move.category !== 'Status') {
