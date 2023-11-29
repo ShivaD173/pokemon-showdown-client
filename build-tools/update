@@ -178,7 +178,7 @@ crossprotocolContents = crossprotocolContents.replace(URL_REGEX, addCachebuster)
 let replayEmbedContents = fs.readFileSync('play.pokemonshowdown.com/js/replay-embed.template.js', {encoding: 'utf8'});
 // replayEmbedContents = replayEmbedContents.replace(/play\.pokemonshowdown\.com/g, routes.client);
 
-const client_http = "http://" + "73.191.22.186:8001";
+const client_http = "http://" + "staraptorshowdown.com";
 replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/data/teambuilder-tables.js", client_http + "/data/teambuilder-tables.js");
 replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/js/battle-tooltips.js", client_http + "/js/battle-tooltips.js");
 replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/js/battle.js", client_http + "/js/battle.js");

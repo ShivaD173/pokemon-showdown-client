@@ -28,7 +28,7 @@ Config.whitelist = [
 
 Config.defaultserver = {
 	id: 'showdown',
-	host: '73.191.22.186',
+	host: '15.204.249.21',
 	// host: '10.0.0.67',
 	port: 8000,
 	httpport: 0,
