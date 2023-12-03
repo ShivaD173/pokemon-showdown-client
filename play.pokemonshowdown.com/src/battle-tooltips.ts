@@ -1068,23 +1068,6 @@ class BattleTooltips {
 			}
 		}
 
-		// VGC Gay exclusive changes
-		if (item === 'protector') {
-			if (speciesName === 'Rhyperior' && this.battle.gen === 9) {
-				stats.def = Math.floor(stats.def * 1.5);
-			}
-		}
-		if (item === 'electirizer') {
-			if (speciesName === 'Electivire' && this.battle.gen === 9) {
-				stats.atk = Math.floor(stats.atk * 1.5);
-			}
-		}
-		if (item === 'magmarizer') {
-			if (speciesName === 'Magmortar' && this.battle.gen === 9) {
-				stats.spa = Math.floor(stats.spa * 1.5);
-			}
-		}
-
 		if (speciesName === 'Ditto' && !(clientPokemon && 'transform' in clientPokemon.volatiles)) {
 			if (item === 'quickpowder') {
 				speedModifiers.push(2);
@@ -1633,6 +1616,22 @@ class BattleTooltips {
 			}
 		}
 
+		if (this.battle.dex.modid.includes('vgcgay')) {
+			let illuminate = false;
+			for (const side of this.battle.sides) {
+				for (const active of side.active) {
+					if (!active || active.fainted) continue;
+					if (active.ability === 'Illuminate') {
+						illuminate = true;
+					}
+				}
+			}
+			if (illuminate) {
+				accuracyModifiers.push(4915);
+				value.modify(1.2, "Illuminate");
+			}
+		}
+
 		if (value.tryAbility('Hustle') && move.category === 'Physical') {
 			accuracyModifiers.push(3277);
 			value.abilityModify(0.8, "Hustle");
@@ -1898,8 +1897,15 @@ class BattleTooltips {
 				value.abilityModify(1.2, 'Iron Fist');
 			}
 		}
-		if (move.flags['pulse']) {
-			value.abilityModify(1.5, "Mega Launcher");
+
+		if (this.battle.dex.modid.includes('vgcgay')) {
+			if (move.flags['pulse'] || move.flags['bullet'] || move.name.includes('Cannon')) {
+				value.abilityModify(1.3, "Mega Launcher");
+			}
+		} else {
+			if (move.flags['pulse']) {
+				value.abilityModify(1.5, "Mega Launcher");
+			}
 		}
 		if (move.flags['bite']) {
 			value.abilityModify(1.5, "Strong Jaw");
