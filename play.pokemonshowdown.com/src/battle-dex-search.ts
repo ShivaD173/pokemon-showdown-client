@@ -990,7 +990,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		}
 		let tierSet: SearchRow[] = table.tierSet;
 		let slices: {[k: string]: number} = table.formatSlices;
-		if (format === 'ubers' || format === 'uber' || format === 'ubersuu') tierSet = tierSet.slice(slices.Uber);
+		if (format.endsWith('ubers') || format === 'uber' || format === 'ubersuu') tierSet = tierSet.slice(slices.Uber);
 		else if (isVGCOrBS || (isHackmons && dex.gen === 9 && !this.formatType)) {
 			if (format.endsWith('series13') || isHackmons) {
 				// Show Mythicals
@@ -1005,7 +1005,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		} else if (format.endsWith('ou')) tierSet = tierSet.slice(slices.OU);
 		else if (format.endsWith('uu')) tierSet = tierSet.slice(slices.UU);
 		else if (format.endsWith('ru')) tierSet = tierSet.slice(slices.RU || slices.UU);
-		else if (format === 'nu') tierSet = tierSet.slice(slices.NU || slices.RU || slices.UU);
+		else if (format.endsWith('nu')) tierSet = tierSet.slice(slices.NU || slices.RU || slices.UU);
 		else if (format === 'pu') tierSet = tierSet.slice(slices.PU || slices.NU);
 		else if (format === 'zu') tierSet = tierSet.slice(slices.ZU || slices.PU || slices.NU);
 		else if (format === 'su') tierSet = tierSet.slice(slices["SU"]);
