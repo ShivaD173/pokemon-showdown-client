@@ -243,7 +243,8 @@
 				uubl: "UUBL",
 				rubl: "RUBL",
 				nubl: "NUBL",
-				publ: "PUBL"
+				publ: "PUBL",
+				zubl: "ZUBL"
 			};
 			var tier = {name: tierTable[id] || id.toUpperCase()};
 			return this.renderTierRow(tier, matchStart, matchLength, errorMessage);
