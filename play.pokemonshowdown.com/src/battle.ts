@@ -476,7 +476,7 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 	}
 	getTypes(serverPokemon?: ServerPokemon, preterastallized = false): [ReadonlyArray<TypeName>, TypeName | ''] {
 		let types: ReadonlyArray<TypeName>;
-		if (this.terastallized && !preterastallized) {
+		if (!preterastallized && this.terastallized && this.terastallized !== 'Stellar') {
 			types = [this.terastallized as TypeName];
 		} else if (this.volatiles.typechange) {
 			types = this.volatiles.typechange[1].split('/');
@@ -2912,7 +2912,6 @@ export class Battle {
 				target!.side.removeSideCondition('Reflect');
 				target!.side.removeSideCondition('LightScreen');
 				break;
-			case 'hyperdrill':
 			case 'hyperspacefury':
 			case 'hyperspacehole':
 			case 'phantomforce':

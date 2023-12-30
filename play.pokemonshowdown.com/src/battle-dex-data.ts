@@ -433,8 +433,8 @@ const BattlePokemonIconIndexes: {[id: string]: number} = {
 	// alt forms with duplicate icons
 	greninjabond: 658,
 	gumshoostotem: 735,
-	raticatealolatotem: 1020 + 120,
-	marowakalolatotem: 1020 + 136,
+	raticatealolatotem: 1032 + 120,
+	marowakalolatotem: 1032 + 136,
 	araquanidtotem: 752,
 	lurantistotem: 754,
 	salazzletotem: 758,
@@ -1048,7 +1048,7 @@ type NatureName = 'Adamant' | 'Bashful' | 'Bold' | 'Brave' | 'Calm' | 'Careful' 
 	'Quiet' | 'Quirky' | 'Rash' | 'Relaxed' | 'Sassy' | 'Serious' | 'Timid';
 type StatNameExceptHP = 'atk' | 'def' | 'spa' | 'spd' | 'spe';
 type TypeName = 'Normal' | 'Fighting' | 'Flying' | 'Poison' | 'Ground' | 'Rock' | 'Bug' | 'Ghost' | 'Steel' |
-	'Fire' | 'Water' | 'Grass' | 'Electric' | 'Psychic' | 'Ice' | 'Dragon' | 'Dark' | 'Fairy' | '???';
+	'Fire' | 'Water' | 'Grass' | 'Electric' | 'Psychic' | 'Ice' | 'Dragon' | 'Dark' | 'Fairy' | 'Stellar' | '???';
 type StatusName = 'par' | 'psn' | 'frz' | 'slp' | 'brn' | 'fst';
 type BoostStatName = 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'evasion' | 'accuracy' | 'spc';
 type GenderName = 'M' | 'F' | 'N';
