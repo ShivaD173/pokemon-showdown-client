@@ -897,7 +897,7 @@
 			buf += '<p><label class="label">Format:</label>' + this.renderFormats(format) + '</p>';
 			buf += '<p><label class="label">Team:</label>' + this.renderTeams(format) + '</p>';
 			buf += '<p><label class="checkbox"><input type="checkbox" name="private" ' + (Storage.prefs('disallowspectators') ? 'checked' : '') + ' /> <abbr title="You can still invite spectators by giving them the URL or using the /invite command">Don\'t allow spectators</abbr></label></p>';
-			var bestOfDefault = format && BattleFormats[format] ? BattleFormats[format].bestOfDefault : false;
+			var bestOfDefault = format ? BattleFormats[format] ? BattleFormats[format].bestOfDefault : false : true;
 			buf += '<p' + (!bestOfDefault ? ' class="hidden">' : '>');
 			buf += '<label class="checkbox"><input type="checkbox" name="bestof" /> <abbr title="Start a team-locked best-of-n series">Best-of-<input name="bestofvalue" type="number" min="3" max="9" step="2" value="3" style="width: 28px; vertical-align: initial;"></abbr></label></p>';
 			buf += '<p class="buttonbar"><button name="makeChallenge" class="button"><strong>Challenge</strong></button> <button type="button" name="dismissChallenge" class="button">Cancel</button></p></form>';
