@@ -1732,14 +1732,15 @@
 			// We fetch this as 'text' and JSON.parse it ourserves in order to have consistent behavior
 			// between the localdev CORS helper and the real jQuery.get function, which would already parse
 			// this into an object based on the content-type header.
-			var path = "";
-			var tiers = ['gen1su', 'gen1iu', 'gen18u', 'gen19u', 'gen2su', 'gen2iu', 'gen28u', 'gen29u', 'gen3su', 'gen3iu', 'gen4su', 'gen4iu', 'gen48u', 'gen49u', 'gen5su', 'gen58u', 'gen6su', 'gen7su', 'gen8su', 'gen9su', 'gen9metronomeffaou', 'gen9metronomeffauu', 'gen9metronomeffaru', 'gen9vgcgay', 'gen9vgcplat'];
-			if (tiers.includes(format)) {
-				path = "http://staraptorshowdown.com/data/sets/" + format + '.json';
-				// path = "http://localhost:8001/data/sets/" + format + '.json';
-			} else {
-				path = 'https://' + Config.routes.client + '/data/sets/' + format + '.json';
-			}
+			// var path = "";
+			// tiers = ['gen1su', 'gen1iu', 'gen18u', 'gen19u', 'gen2su', 'gen2iu', 'gen28u', 'gen29u', 'gen3ru', 'gen3su', 'gen3iu', 'gen4su', 'gen4iu', 'gen48u', 'gen49u', 'gen4lol', 'gen5su', 'gen58u', 'gen6su', 'gen6iu', 'gen7su', 'gen7iu', 'gen8su', 'gen8iu', 'gen9su', 'gen9metronomeffaou', 'gen9metronomeffauu', 'gen9metronomeffaru', 'gen9vgcgay', 'gen9vgcplat']
+			// if (tiers.includes(format)) {
+			// 	path = "http://staraptorshowdown.com/data/sets/" + format + '.json';
+			// 	// path = "http://localhost:8001/data/sets/" + format + '.json';
+			// } else {
+			// 	path = 'https://' + Config.routes.client + '/data/sets/' + format + '.json';
+			// }
+			var path = "http://staraptorshowdown.com/data/sets/" + format + '.json';
 			$.get(path, {}, function (data) {
 				try {
 					self.smogonSets[format] = JSON.parse(data);
