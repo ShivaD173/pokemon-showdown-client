@@ -1725,6 +1725,9 @@ class BattleTooltips {
 			}
 		}
 		let variableBPCap = ['crushgrip', 'wringout'].includes(move.id) ? 120 : move.id === 'hardpress' ? 100 : undefined;
+		if (this.battle.dex.modid.includes('vgcgay')) {
+			variableBPCap = ['crushgrip', 'wringout'].includes(move.id) ? 140 : move.id === 'hardpress' ? 120 : undefined;
+		}
 		if (variableBPCap && target) {
 			value.set(
 				Math.floor(
@@ -1926,6 +1929,12 @@ class BattleTooltips {
 				value.abilityModify(1.4, 'Iron Fist');
 			} else {
 				value.abilityModify(1.2, 'Iron Fist');
+			}
+		}
+
+		if (this.battle.dex.modid.includes('vgcgay')) {
+			if (move.id === "aurorabeam") {
+				value.abilityModify(1.5, "True Aurora");
 			}
 		}
 
