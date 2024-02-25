@@ -171,6 +171,7 @@ interface TeambuilderSpriteData {
 
 const Dex = new class implements ModdedDex {
 	readonly gen = 9;
+	readonly tierShift: boolean = false;
 	readonly modid = 'gen9' as ID;
 	readonly cache = null!;
 
@@ -193,18 +194,19 @@ const Dex = new class implements ModdedDex {
 	loadedSpriteData = {xy: 1, bw: 0};
 	moddedDexes: {[mod: string]: ModdedDex} = {};
 
-	mod(modid: ID): ModdedDex {
-		if (modid === 'gen9') return this;
+	mod(modid: ID, tierShift: boolean = false): ModdedDex {
+		const modidStr: string = tierShift ? modid + "ts" : modid;
+		if (modidStr === 'gen9') return this;
 		if (!window.BattleTeambuilderTable) return this;
-		if (modid in this.moddedDexes) {
-			return this.moddedDexes[modid];
+		if (modidStr in this.moddedDexes) {
+			return this.moddedDexes[modidStr];
 		}
-		this.moddedDexes[modid] = new ModdedDex(modid);
-		return this.moddedDexes[modid];
+		this.moddedDexes[modidStr] = new ModdedDex(modid, tierShift);
+		return this.moddedDexes[modidStr];
 	}
-	forGen(gen: number) {
+	forGen(gen: number, tierShift: boolean = false) {
 		if (!gen) return this;
-		return this.mod(`gen${gen}` as ID);
+		return this.mod(`gen${gen}` as ID, tierShift);
 	}
 	forFormat(format: string) {
 		if (format.includes('letsgo')) {
@@ -218,6 +220,9 @@ const Dex = new class implements ModdedDex {
 		}
 		if (format.includes('vgcgay')) {
 			return this.mod('gen9vgcgay' as ID);
+		}
+		if (format.includes('tiershift')) {
+			return this.mod(format.slice(0, 4) as ID, true);
 		}
 		if (format.slice(0, 3) === 'gen') {
 			const gen = (Number(format.charAt(3)) || 6);
@@ -862,8 +867,52 @@ const Dex = new class implements ModdedDex {
 };
 
 class ModdedDex {
+	static readonly preRuBoosts: {[tier: string]: number} = {
+		uu: 15,
+		nubl: 15,
+		nu: 20,
+		publ: 20,
+		pu: 25,
+		zubl: 25,
+		zu: 30,
+		subl: 30,
+		su: 35,
+		iubl: 35,
+		iu: 40,
+		"8ubl": 40,
+		"8u": 45,
+		"9ubl": 45,
+		"9u": 50,
+		"10ubl": 50,
+		"10u": 55,
+	};
+	static readonly postRuBoosts: {[tier: string]: number} = {
+		uu: 15,
+		rubl: 15,
+		ru: 20,
+		nubl: 20,
+		nu: 25,
+		publ: 25,
+		pu: 30,
+		zubl: 30,
+		zu: 35,
+		subl: 35,
+		su: 40,
+		iubl: 40,
+		ur: 45,
+		nfe: 45,
+		lc: 45,
+		iu: 45,
+		"8ubl": 45,
+		"8u": 50,
+		"9ubl": 50,
+		"9u": 55,
+		"10ubl": 55,
+		"10u": 60,
+	};
 	readonly gen: number;
 	readonly modid: ID;
+	readonly tierShift: boolean;
 	readonly cache = {
 		Moves: {} as any as {[k: string]: Move},
 		Items: {} as any as {[k: string]: Item},
@@ -872,8 +921,9 @@ class ModdedDex {
 		Types: {} as any as {[k: string]: Effect},
 	};
 	pokeballs: string[] | null = null;
-	constructor(modid: ID) {
+	constructor(modid: ID, tierShift: boolean = false) {
 		this.modid = modid;
+		this.tierShift = tierShift;
 		const gen = parseInt(modid.substr(3, 1), 10);
 		if (!modid.startsWith('gen') || !gen) throw new Error("Unsupported modid");
 		if (modid.endsWith("vgcplat")) {
@@ -1011,6 +1061,27 @@ class ModdedDex {
 				data.tier = this.species.get(data.baseSpecies).tier;
 			}
 			if (data.gen > this.gen) data.tier = 'Illegal';
+
+			if (this.tierShift) {
+				let boosts;
+				if (this.gen < 5) {
+					boosts = ModdedDex.preRuBoosts;
+				} else {
+					boosts = ModdedDex.postRuBoosts;
+				}
+				const tier = data.tier.toLowerCase();
+				if (tier in boosts) {
+					const boost = boosts[tier];
+					data.baseStats = {
+						hp: data.baseStats['hp'],
+						atk: data.baseStats['atk'] + boost,
+						def: data.baseStats['def'] + boost,
+						spa: data.baseStats['spa'] + boost,
+						spd: data.baseStats['spd'] + boost,
+						spe: data.baseStats['spe'] + boost,
+					};
+				}
+			}
 
 			const species = new Species(id, name, data);
 			this.cache.Species[id] = species;

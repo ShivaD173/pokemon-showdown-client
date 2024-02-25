@@ -3403,7 +3403,9 @@ export class Battle {
 			if (this.tier.includes('VGC Gay')) {
 				this.dex = Dex.mod('gen9vgcgay' as ID);
 			}
-			this.log(args);
+			if (this.tier.includes('Tier Shift')) {
+				this.dex = Dex.forGen(this.gen, true);
+			}
 			break;
 		}
 		case 'gametype': {

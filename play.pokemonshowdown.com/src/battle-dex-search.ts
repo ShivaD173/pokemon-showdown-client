@@ -574,12 +574,10 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		this.baseResults = null;
 		this.baseIllegalResults = null;
 
+		this.dex = Dex.forFormat(format);
+
 		if (format.slice(0, 3) === 'gen') {
-			const gen = (Number(format.charAt(3)) || 6);
 			format = (format.slice(4) || 'customgame') as ID;
-			this.dex = Dex.forGen(gen);
-		} else if (!format) {
-			this.dex = Dex;
 		}
 
 		if (format.startsWith('dlc1') && this.dex.gen === 8) {
@@ -617,7 +615,6 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		}
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
-			this.dex = Dex.forFormat(format);
 			if (format.startsWith("vgcplat")) {
 				this.formatType = 'vgcplat';
 			}
@@ -1031,6 +1028,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 				tierSet = tierSet.slice(slices.Regular);
 			}
 		} else if (format.endsWith('ou')) tierSet = tierSet.slice(slices.OU);
+		else if (format.endsWith('tiershift')) tierSet = tierSet.slice(slices.OU);
 		else if (format.endsWith('uu')) tierSet = tierSet.slice(slices.UU);
 		else if (format.endsWith('ru')) tierSet = tierSet.slice(slices.RU || slices.UU);
 		else if (format.endsWith('nu')) tierSet = tierSet.slice(slices.NU || slices.RU || slices.UU);
