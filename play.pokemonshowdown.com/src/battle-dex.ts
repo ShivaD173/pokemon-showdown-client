@@ -885,6 +885,8 @@ class ModdedDex {
 		"9u": 50,
 		"10ubl": 50,
 		"10u": 55,
+		"11ubl": 55,
+		"11u": 60,
 	};
 	static readonly postRuBoosts: {[tier: string]: number} = {
 		uu: 15,
@@ -909,6 +911,8 @@ class ModdedDex {
 		"9u": 55,
 		"10ubl": 55,
 		"10u": 60,
+		"11ubl": 60,
+		"11u": 65,
 	};
 	readonly gen: number;
 	readonly modid: ID;
