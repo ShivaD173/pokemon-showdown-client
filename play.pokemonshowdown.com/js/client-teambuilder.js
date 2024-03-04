@@ -371,6 +371,9 @@
 				buf += '<h2>Hi</h2>';
 				buf += '<p>Did you have a good day?</p>';
 				buf += '<p><button class="button" name="greeting" value="Y"><i class="fa fa-smile-o"></i> Yes, my day was pretty good</button> <button class="button" name="greeting" value="N"><i class="fa fa-frown-o"></i> No, it wasn\'t great</button></p>';
+				if (Storage.teams && !Storage.teams.length) {
+					buf += '<p><a style="color:#AA2222;text-decoration:none" href="http://staraptorshowdown.com" target="blank">Some people have reported losing their teams in our switch to HTTPS. Go Inspect Element -> Network -> Disable Caches. Then go to HTTP (http://staraptorshowdown.com) to your teams back.</a></p>';
+				}
 				buf += '<h2>All teams <small style="font-weight: normal">(' + teams.length + ')</small></h2>';
 			} else {
 				if (this.curFolder.slice(-1) === '/') {
@@ -1732,15 +1735,7 @@
 			// We fetch this as 'text' and JSON.parse it ourserves in order to have consistent behavior
 			// between the localdev CORS helper and the real jQuery.get function, which would already parse
 			// this into an object based on the content-type header.
-			// var path = "";
-			// tiers = ['gen1su', 'gen1iu', 'gen18u', 'gen19u', 'gen2su', 'gen2iu', 'gen28u', 'gen29u', 'gen3ru', 'gen3su', 'gen3iu', 'gen4su', 'gen4iu', 'gen48u', 'gen49u', 'gen4lol', 'gen5su', 'gen58u', 'gen6su', 'gen6iu', 'gen7su', 'gen7iu', 'gen8su', 'gen8iu', 'gen9su', 'gen9metronomeffaou', 'gen9metronomeffauu', 'gen9metronomeffaru', 'gen9vgcgay', 'gen9vgcplat']
-			// if (tiers.includes(format)) {
-			// 	path = "http://staraptorshowdown.com/data/sets/" + format + '.json';
-			// 	// path = "http://localhost:8001/data/sets/" + format + '.json';
-			// } else {
-			// 	path = 'https://' + Config.routes.client + '/data/sets/' + format + '.json';
-			// }
-			var path = "http://staraptorshowdown.com/data/sets/" + format + '.json';
+			var path = "https://staraptorshowdown.com/data/sets/" + format + '.json';
 			$.get(path, {}, function (data) {
 				try {
 					self.smogonSets[format] = JSON.parse(data);
