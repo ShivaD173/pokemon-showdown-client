@@ -3,8 +3,8 @@ Pokémon Showdown Client
 
 Navigation: [Website][1] | [Server repository][2] | **Client repository** | [Dex repository][3]
 
-  [1]: http://pokemonshowdown.com/
-  [2]: https://github.com/Zarel/Pokemon-Showdown
+  [1]: https://staraptorshowdown.com/
+  [2]: https://github.com/ShivaD173/Pokemon-Showdown
   [3]: https://github.com/Zarel/Pokemon-Showdown-Dex
 
 Introduction

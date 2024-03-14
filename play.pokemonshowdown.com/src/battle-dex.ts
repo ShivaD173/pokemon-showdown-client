@@ -869,6 +869,8 @@ const Dex = new class implements ModdedDex {
 class ModdedDex {
 	static readonly preRuBoosts: {[tier: string]: number} = {
 		uu: 15,
+		rubl: 15,
+		ru: 15,
 		nubl: 15,
 		nu: 20,
 		publ: 20,
@@ -881,6 +883,8 @@ class ModdedDex {
 		iu: 40,
 		"8ubl": 40,
 		"8u": 45,
+		nfe: 45,
+		lc: 45,
 		"9ubl": 45,
 		"9u": 50,
 		"10ubl": 50,
@@ -1057,7 +1061,9 @@ class ModdedDex {
 			}
 
 			const table = window.BattleTeambuilderTable[this.modid];
-			if (id in table.overrideTier) data.tier = table.overrideTier[id];
+			if (table) {
+				if (id in table.overrideTier) data.tier = table.overrideTier[id];
+			}
 			if (!data.tier && id.slice(-5) === 'totem') {
 				data.tier = this.species.get(id.slice(0, -5)).tier;
 			}
