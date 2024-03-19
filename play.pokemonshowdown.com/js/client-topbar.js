@@ -15,7 +15,7 @@
 		initialize: function () {
 			// April Fool's 2016 - Digimon Showdown
 			// this.$el.html('<img class="logo" src="' + Dex.resourcePrefix + 'sprites/afd/digimonshowdown.png" alt="Digimon Showdown! (beta)" width="146" height="44" /><div class="maintabbarbottom"></div><div class="tabbar maintabbar"><div class="inner"></div></div><div class="userbar"></div>');
-			this.$el.html('<img class="logo" src="' + Dex.resourcePrefix + 'pokemonshowdownbeta.png" srcset="' + Dex.resourcePrefix + 'pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown! (beta)" width="146" height="44" /><div class="maintabbarbottom"></div><div class="tabbar maintabbar"><div class="inner"></div></div><div class="userbar"></div>');
+			this.$el.html('<img class="logo" src="' + Dex.localPrefix + 'pokemonshowdownbeta.png" srcset="' + Dex.localPrefix + 'pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown! (beta)" width="146" height="44" /><div class="maintabbarbottom"></div><div class="tabbar maintabbar"><div class="inner"></div></div><div class="userbar"></div>');
 			this.$tabbar = this.$('.maintabbar .inner');
 			// this.$sidetabbar = this.$('.sidetabbar');
 			this.$userbar = this.$('.userbar');
@@ -155,10 +155,10 @@
 				var $favicon = $('#dynamic-favicon');
 				if (!!$favicon.data('on') !== !!notificationCount) {
 					if (notificationCount) {
-						$favicon.attr('href', Dex.resourcePrefix + '/favicon-notify.ico');
+						$favicon.attr('href', Dex.localPrefix + '/favicon-notify.ico');
 						$favicon.data('on', '1');
 					} else {
-						$favicon.attr('href', Dex.resourcePrefix + '/favicon.ico');
+						$favicon.attr('href', Dex.localPrefix + '/favicon.ico');
 						$favicon.data('on', '');
 					}
 				}
@@ -199,7 +199,7 @@
 			for (var i in app.rooms) {
 				if (app.rooms[i] !== app.curRoom && app.rooms[i].notificationClass === ' notifying') notificationClass = ' notifying';
 			}
-			var buf = '<ul><li><a class="button minilogo' + notificationClass + '" href="' + app.root + '"><img src="' + Dex.resourcePrefix + 'favicon-256.png" width="32" height="32" alt="Pok&eacute;mon Showdown! (beta)" /><i class="fa fa-caret-down" style="display:inline-block"></i></a></li></ul>';
+			var buf = '<ul><li><a class="button minilogo' + notificationClass + '" href="' + app.root + '"><img src="' + Dex.localPrefix + 'favicon-256.png" width="32" height="32" alt="Pok&eacute;mon Showdown! (beta)" /><i class="fa fa-caret-down" style="display:inline-block"></i></a></li></ul>';
 
 			buf += '<ul>' + this.renderRoomTab(app.curRoom) + '</ul>';
 
