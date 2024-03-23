@@ -155,10 +155,10 @@
 				var $favicon = $('#dynamic-favicon');
 				if (!!$favicon.data('on') !== !!notificationCount) {
 					if (notificationCount) {
-						$favicon.attr('href', Dex.localPrefix + '/favicon-notify.ico');
+						$favicon.attr('href', Dex.localPrefix + 'favicon-notify.ico');
 						$favicon.data('on', '1');
 					} else {
-						$favicon.attr('href', Dex.localPrefix + '/favicon.ico');
+						$favicon.attr('href', Dex.localPrefix + 'favicon.ico');
 						$favicon.data('on', '');
 					}
 				}
