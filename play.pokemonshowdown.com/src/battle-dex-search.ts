@@ -1800,7 +1800,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				} else if (value === 'Multihit') {
 					if (!move.multihit) return false;
 				} else if (value === 'Recoil') {
-					if (!move.recoil) return false;
+					if (!move.recoil && !move.hasCrashDamage) return false;
 				} else if (value === 'Spread') {
 					if (!['allAdjacent', 'allAdjacentFoes'].includes(move.target)) return false;
 				} else {
