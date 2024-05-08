@@ -671,9 +671,9 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			case 'eviolite':
 			case 'assaultvest':
 			case 'focussash':
-			// case 'powerherb':
+			case 'powerherb':
 			case 'rockyhelmet':
-			// case 'heavydutyboots':
+			case 'heavydutyboots':
 			case 'expertbelt':
 			case 'salacberry':
 			case 'custapberry':
@@ -693,10 +693,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				else poorItems.push(id);
 				break;
 			case 'aguavberry':
-			case 'figyberry':
+			// case 'figyberry':
 			case 'iapapaberry':
-			case 'magoberry':
-			case 'wikiberry':
+			// case 'magoberry':
+			// case 'wikiberry':
 				if (genNum >= 7) greatItems.push(id);
 				else poorItems.push(id);
 				break;
