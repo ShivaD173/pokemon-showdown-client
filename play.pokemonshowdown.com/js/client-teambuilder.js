@@ -1848,7 +1848,7 @@
 			var sampleSet;
 			if (this.$(button).hasClass('smogon')) {
 				var smogonFormatSets = this.smogonSets[this.curTeam.format];
-				sampleSet = smogonFormatSets['dex'][species][setName] || smogonFormatSets['stats'][species][setName];
+				sampleSet = (smogonFormatSets['dex'][species] && smogonFormatSets['dex'][species][setName]) || (smogonFormatSets['stats'][species] && smogonFormatSets['stats'][species][setName]);
 			}
 
 			if (this.$(button).hasClass('box')) {
