@@ -1502,8 +1502,9 @@ class Species implements Effect {
 	readonly isNonstandard: string | null;
 	readonly unreleasedHidden: boolean | 'Past';
 	readonly changesFrom: string | undefined;
+	readonly usage: number;
 
-	constructor(id: ID, name: string, data: any) {
+	constructor(id: ID, name: string, data: any, usage: number) {
 		if (!data || typeof data !== 'object') data = {};
 		if (data.name) name = data.name;
 		this.name = Dex.sanitizeName(name);
@@ -1557,6 +1558,7 @@ class Species implements Effect {
 		this.isNonstandard = data.isNonstandard || null;
 		this.unreleasedHidden = data.unreleasedHidden || false;
 		this.changesFrom = data.changesFrom || undefined;
+		this.usage = usage;
 		if (!this.gen) {
 			if (this.num >= 906 || this.formeid.startsWith('-paldea')) {
 				this.gen = 9;

@@ -171,13 +171,14 @@ interface TeambuilderSpriteData {
 
 const Dex = new class implements ModdedDex {
 	readonly gen = 9;
-	readonly tierShift: boolean = false;
+	readonly format: string = "";
 	readonly modid = 'gen9' as ID;
 	readonly cache = null!;
 
 	readonly statNames: ReadonlyArray<StatName> = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
 	readonly statNamesExceptHP: ReadonlyArray<StatNameExceptHP> = ['atk', 'def', 'spa', 'spd', 'spe'];
 
+	statsData: ChaosResponse | null = null;
 	pokeballs: string[] | null = null;
 
 	resourcePrefix = (() => {
@@ -198,39 +199,39 @@ const Dex = new class implements ModdedDex {
 	loadedSpriteData = {xy: 1, bw: 0};
 	moddedDexes: {[mod: string]: ModdedDex} = {};
 
-	mod(modid: ID, tierShift: boolean = false): ModdedDex {
-		const modidStr: string = tierShift ? modid + "ts" : modid;
+	mod(modid: ID, format: string = ""): ModdedDex {
+		const modidStr = format === "" ? modid : format;
 		if (modidStr === 'gen9') return this;
 		if (!window.BattleTeambuilderTable) return this;
 		if (modidStr in this.moddedDexes) {
 			return this.moddedDexes[modidStr];
 		}
-		this.moddedDexes[modidStr] = new ModdedDex(modid, tierShift);
+		this.moddedDexes[modidStr] = new ModdedDex(modid, format);
 		return this.moddedDexes[modidStr];
 	}
-	forGen(gen: number, tierShift: boolean = false) {
+	forGen(gen: number, format: string = "") {
 		if (!gen) return this;
-		return this.mod(`gen${gen}` as ID, tierShift);
+		return this.mod(`gen${gen}` as ID, format);
 	}
 	forFormat(format: string) {
 		if (format.includes('letsgo')) {
-			return this.mod('gen7letsgo' as ID);
+			return this.mod('gen7letsgo' as ID, format);
 		}
 		if (format.includes('bdsp')) {
-			return this.mod('gen8bdsp' as ID);
+			return this.mod('gen8bdsp' as ID, format);
 		}
 		if (format.includes('vgcplat')) {
-			return this.mod('gen4vgcplat' as ID);
+			return this.mod('gen4vgcplat' as ID, format);
 		}
 		if (format.includes('vgcgay')) {
-			return this.mod('gen9vgcgay' as ID);
+			return this.mod('gen9vgcgay' as ID, format);
 		}
 		if (format.includes('tiershift')) {
-			return this.mod(format.slice(0, 4) as ID, true);
+			return this.mod(format.slice(0, 4) as ID, format);
 		}
 		if (format.slice(0, 3) === 'gen') {
 			const gen = (Number(format.charAt(3)) || 6);
-			return this.forGen(gen);
+			return this.forGen(gen, format);
 		}
 		return this;
 	}
@@ -424,7 +425,9 @@ const Dex = new class implements ModdedDex {
 				if (!data.tier && data.baseSpecies && toID(data.baseSpecies) !== id) {
 					data.tier = this.species.get(data.baseSpecies).tier;
 				}
-				species = new Species(id, name, data);
+
+				// FIXME: Usage for gen9ou
+				species = new Species(id, name, data, 0);
 				window.BattlePokedex[id] = species;
 			}
 
@@ -438,7 +441,7 @@ const Dex = new class implements ModdedDex {
 							baseForme: "",
 							baseSpecies: species.name,
 							otherFormes: null,
-						});
+						}, 0);
 						window.BattlePokedexAltForms[formid] = species;
 						break;
 					}
@@ -871,6 +874,49 @@ const Dex = new class implements ModdedDex {
 	}
 };
 
+interface ChaosResponse {
+	info: {
+		metagame: string;
+		cutoff: number;
+		cutoff_deviation: number;
+		team_type: any;
+		number_of_battles: number;
+	};
+	data: {
+		[speciesForme: string]: ChaosPokemon;
+	};
+}
+
+interface ChaosPokemon {
+	rawCount: number;
+	viabilityCeiling: [number, number, number, number];
+	abilities: { [name: string]: number; };
+	teraTypes: { [name: string]: number; };
+	items: { [name: string]: number; };
+	spreads: { [spread: string]: number; };
+	moves: { [name: string]: number; };
+	teammates: { [value: string]: number; };
+	checksAndCounters: { [value: string]: number; };
+	usage: number;
+}
+
+async function fetchStatsData(format: string): Promise<ChaosResponse> {
+	// const url = 'https://staraptorshowdown.com/Stats/2024-04/chaos/' + format + '-0.json';
+	const url = 'http://localhost:8001/Stats/2024-04/chaos/' + format + '-0.json';
+	try {
+		const response = await fetch(url);
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+		const data: ChaosResponse = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Failed to fetch data:', error);
+		throw error;
+	}
+}
+
 class ModdedDex {
 	static readonly preRuBoosts: {[tier: string]: number} = {
 		uu: 15,
@@ -925,7 +971,7 @@ class ModdedDex {
 	};
 	readonly gen: number;
 	readonly modid: ID;
-	readonly tierShift: boolean;
+	readonly format: string;
 	readonly cache = {
 		Moves: {} as any as {[k: string]: Move},
 		Items: {} as any as {[k: string]: Item},
@@ -933,10 +979,31 @@ class ModdedDex {
 		Species: {} as any as {[k: string]: Species},
 		Types: {} as any as {[k: string]: Effect},
 	};
+	statsData: ChaosResponse | null;
 	pokeballs: string[] | null = null;
-	constructor(modid: ID, tierShift: boolean = false) {
+	constructor(modid: ID, format: string = "") {
 		this.modid = modid;
-		this.tierShift = tierShift;
+		this.format = format;
+		if (format !== "") {
+			this.statsData = {
+				info: {
+					metagame: "",
+					cutoff: 0, cutoff_deviation: 0,
+					team_type: null, number_of_battles: -1,
+				},
+				data: {},
+			};
+			fetchStatsData(format)
+			.then(data => {
+				this.statsData = data;
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				this.statsData = null;
+			});
+		} else {
+			this.statsData = null;
+		}
 		const gen = parseInt(modid.substr(3, 1), 10);
 		if (!modid.startsWith('gen') || !gen) throw new Error("Unsupported modid");
 		if (modid.endsWith("vgcplat")) {
@@ -1077,7 +1144,7 @@ class ModdedDex {
 			}
 			if (data.gen > this.gen) data.tier = 'Illegal';
 
-			if (this.tierShift) {
+			if (this.format.includes("tiershift")) {
 				let boosts;
 				if (this.gen < 5) {
 					boosts = ModdedDex.preRuBoosts;
@@ -1098,8 +1165,15 @@ class ModdedDex {
 				}
 			}
 
-			const species = new Species(id, name, data);
-			this.cache.Species[id] = species;
+			let usage: number = 0;
+			if (this.statsData && data.name in this.statsData.data) {
+				usage = this.statsData.data[data.name].usage;
+			}
+			const species = new Species(id, name, data, usage);
+			// Don't cache if query is not finished
+			if (this.statsData?.info.number_of_battles !== -1) {
+				this.cache.Species[id] = species;
+			}
 			return species;
 		},
 	};

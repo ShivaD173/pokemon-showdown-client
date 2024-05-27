@@ -275,6 +275,7 @@
 		}
 		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'spe' ? ' cur' : '') + '" data-sort="spe">Spe</button>';
 		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'bst' ? ' cur' : '') + '" data-sort="bst">BST</button>';
+		buf += '<button class="sortcol statsortcol' + (this.sortCol === 'use' ? ' cur' : '') + '" data-sort="use">Use</button>';
 		buf += '</div></li>';
 		return buf;
 	};
@@ -392,6 +393,8 @@
 			bst += stats[i];
 		}
 		buf += '<span class="col bstcol"><em>BST<br />' + bst + '</em></span> ';
+		var usage = (pokemon.usage === 0) ? 0 : (pokemon.usage * 100).toFixed(1);
+		buf += '<span class="col statcol"><em>%</em><br />' + usage + '</span> ';
 
 		buf += '</a></li>';
 

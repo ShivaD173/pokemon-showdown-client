@@ -126,7 +126,7 @@
 .dexlist .pplabelcol {
 	padding-top: 1px;
 	height: 28px;
-	width: 24px;
+	width: 23px;
 	text-align: right;
 	font-size: 8pt;
 }
@@ -146,6 +146,7 @@
 }
 .dexlist .bstcol {
 	padding-left: 2px;
+	padding-right: 2px;
 }
 .dexlist .labelcol em,
 .dexlist .widelabelcol em,

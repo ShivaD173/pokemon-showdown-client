@@ -126,7 +126,7 @@
 .utilichart .pplabelcol {
 	padding-top: 1px;
 	height: 28px;
-	width: 24px;
+	width: 23px;
 	text-align: right;
 	font-size: 8pt;
 }
@@ -146,6 +146,7 @@
 }
 .utilichart .bstcol {
 	padding-left: 2px;
+	padding-right: 2px;
 }
 .utilichart .labelcol em,
 .utilichart .widelabelcol em,

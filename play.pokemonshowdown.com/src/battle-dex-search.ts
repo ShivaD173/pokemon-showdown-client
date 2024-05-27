@@ -630,13 +630,11 @@ abstract class BattleTypedSearch<T extends SearchType> {
 				this.formatType = 'bdsp';
 			}
 			format = format.slice(4) as ID;
-			this.dex = Dex.mod('gen8bdsp' as ID);
 		}
 		if (format === 'partnersincrime') this.formatType = 'doubles';
 		if (format.startsWith('ffa') || format === 'freeforall') this.formatType = 'doubles';
 		if (format.includes('letsgo')) {
 			this.formatType = 'letsgo';
-			this.dex = Dex.mod('gen7letsgo' as ID);
 		}
 		if (format.includes('nationaldex') || format.startsWith('nd') || format.includes('natdex')) {
 			if (format !== 'nationaldexdoubles') {
@@ -1158,6 +1156,12 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 					bst2 -= base2.spd;
 				}
 				return (bst2 - bst1) * sortOrder;
+			});
+		} else if (sortCol === 'use') {
+			return results.sort(([rowType1, id1], [rowType2, id2]) => {
+				const stat1 = this.dex.species.get(id1).usage;
+				const stat2 = this.dex.species.get(id2).usage;
+				return (stat2 - stat1) * sortOrder;
 			});
 		} else if (sortCol === 'name') {
 			return results.sort(([rowType1, id1], [rowType2, id2]) => {
