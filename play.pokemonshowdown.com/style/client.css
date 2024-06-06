@@ -2687,7 +2687,7 @@ a.ilink.yours {
 	left: 0;
 	bottom: 0;
 	right: 0;
-	min-width: 640px;
+	min-width: 660px;
 
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;

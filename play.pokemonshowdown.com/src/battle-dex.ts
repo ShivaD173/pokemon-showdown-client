@@ -984,7 +984,7 @@ class ModdedDex {
 	constructor(modid: ID, format: string = "") {
 		this.modid = modid;
 		this.format = format;
-		if (format !== "") {
+		if (format !== "" && format !== "gen9su") {
 			this.statsData = {
 				info: {
 					metagame: "",
@@ -995,7 +995,12 @@ class ModdedDex {
 			};
 			fetchStatsData(format)
 			.then(data => {
-				this.statsData = data;
+				if (data.info.number_of_battles >= 10) {
+					this.statsData = data;
+				}
+				else {
+					this.statsData = null;
+				}
 			})
 			.catch(error => {
 				console.error('Error:', error);
@@ -1165,9 +1170,12 @@ class ModdedDex {
 				}
 			}
 
-			let usage: number = 0;
-			if (this.statsData && data.name in this.statsData.data) {
-				usage = this.statsData.data[data.name].usage;
+			let usage: number = -1;
+			if (this.statsData) {
+				usage = 0;
+				if (data.name in this.statsData.data) {
+					usage = this.statsData.data[data.name].usage;
+				}
 			}
 			const species = new Species(id, name, data, usage);
 			// Don't cache if query is not finished

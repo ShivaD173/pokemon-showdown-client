@@ -393,8 +393,10 @@
 			bst += stats[i];
 		}
 		buf += '<span class="col bstcol"><em>BST<br />' + bst + '</em></span> ';
-		var usage = (pokemon.usage === 0) ? 0 : (pokemon.usage * 100).toFixed(1);
-		buf += '<span class="col statcol"><em>%</em><br />' + usage + '</span> ';
+		if (pokemon.usage !== -1) {
+			var usage = (pokemon.usage === 0) ? 0 : (pokemon.usage * 100).toFixed(1);
+			buf += '<span class="col statcol"><em>%</em><br />' + usage + '</span> ';
+		}
 
 		buf += '</a></li>';
 
