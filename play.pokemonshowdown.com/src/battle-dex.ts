@@ -878,9 +878,7 @@ interface ChaosResponse {
 	info: {
 		metagame: string;
 		cutoff: number;
-		cutoff_deviation: number;
-		team_type: any;
-		number_of_battles: number;
+		"number of battles": number;
 	};
 	data: {
 		[speciesForme: string]: ChaosPokemon;
@@ -988,14 +986,17 @@ class ModdedDex {
 			this.statsData = {
 				info: {
 					metagame: "",
-					cutoff: 0, cutoff_deviation: 0,
-					team_type: null, number_of_battles: -1,
+					cutoff: 0,
+					"number of battles": -1
 				},
 				data: {},
 			};
 			fetchStatsData(format)
 			.then(data => {
-				if (data.info.number_of_battles >= 10) {
+				console.log(data)
+				console.log(data.info)
+				console.log(data.info["number of battles"])
+				if (data.info["number of battles"] >= 10) {
 					this.statsData = data;
 				}
 				else {
@@ -1179,7 +1180,7 @@ class ModdedDex {
 			}
 			const species = new Species(id, name, data, usage);
 			// Don't cache if query is not finished
-			if (this.statsData?.info.number_of_battles !== -1) {
+			if (this.statsData?.info["number of battles"] !== -1) {
 				this.cache.Species[id] = species;
 			}
 			return species;
