@@ -437,6 +437,7 @@ License: GPLv2
 	background: #99BBFF url(../fx/weather-raindance.jpg) no-repeat scroll left top;
 	color: #0044BB;
 }
+.locustsweather,
 .sandstormweather {
 	background: #E6E0AC url(../fx/weather-sandstorm.png) no-repeat scroll left top;
 	color: #554433;
@@ -446,10 +447,19 @@ License: GPLv2
 	background: #AADDEE url(../fx/weather-hail.png) no-repeat scroll left top;
 	color: #114455;
 }
+.darknessweather {
+	background: #AAAAAA url(../fx/weather-darkness.png) no-repeat scroll left top;
+	color: #000000;
+}
+.ghostweather {
+	background: #AAAAAA url(../fx/weather-ghost.jpg) no-repeat scroll left top;
+	color: #666666;
+}
 .deltastreamweather {
 	background: #AAAAAA url(../fx/weather-strongwind.png) no-repeat scroll left top;
 	color: #666666;
 }
+.stellarstormweather,
 .mistyterrainweather {
 	background: #EEAACC url(../fx/weather-mistyterrain.png) no-repeat scroll left top;
 	color: #551144;
@@ -462,6 +472,7 @@ License: GPLv2
 	background: #CCEEAA url(../fx/weather-grassyterrain.png) no-repeat scroll left top;
 	color: #335511;
 }
+.acidrainweather,
 .psychicterrainweather {
 	background: #CCAAEE url(../fx/weather-psychicterrain.png) no-repeat scroll left top;
 	color: #441155;

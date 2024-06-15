@@ -226,6 +226,9 @@ const Dex = new class implements ModdedDex {
 		if (format.includes('vgcgay')) {
 			return this.mod('gen9vgcgay' as ID, format);
 		}
+		if (format.includes('vgcspringmayhem')) {
+			return this.mod('gen9vgcspringmayhem' as ID, format);
+		}
 		if (format.includes('tiershift')) {
 			return this.mod(format.slice(0, 4) as ID, format);
 		}
@@ -910,7 +913,6 @@ async function fetchStatsData(format: string): Promise<ChaosResponse> {
 		const data: ChaosResponse = await response.json();
 		return data;
 	} catch (error) {
-		console.error('Failed to fetch data:', error);
 		throw error;
 	}
 }
@@ -987,24 +989,19 @@ class ModdedDex {
 				info: {
 					metagame: "",
 					cutoff: 0,
-					"number of battles": -1
+					"number of battles": -1,
 				},
 				data: {},
 			};
 			fetchStatsData(format)
 			.then(data => {
-				console.log(data)
-				console.log(data.info)
-				console.log(data.info["number of battles"])
 				if (data.info["number of battles"] >= 10) {
 					this.statsData = data;
-				}
-				else {
+				} else {
 					this.statsData = null;
 				}
 			})
 			.catch(error => {
-				console.error('Error:', error);
 				this.statsData = null;
 			});
 		} else {

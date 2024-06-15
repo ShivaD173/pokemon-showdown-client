@@ -322,7 +322,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const LC = GENS.map(num => num + 0.7);
 	const STADIUM = [2.04, 1.04];
 	const NATDEX = [9.1, 8.1];
-	const ADDED = [-4.81, -9.81, 9.21];
+	const ADDED = [-4.81, -9.81, 9.21, -9.82];
 	const OTHER = [9.9, 9.6, 9.411, 9.41, 9.401, 9.4, 9.2, -9.4, -9.401, 8.6, 8.4, 8.2, 8.1, -8.4, -8.6, 7.1];
 
 	// process.stdout.write("\n  ");
@@ -341,6 +341,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isVGC = ('' + genIdent).endsWith('.5');
 		const isVGCPlat = (genIdent === -4.81);
 		const isGay = (genIdent === -9.81);
+		const isSpring = (genIdent === -9.82);
 		const isMet = (genIdent === 9.21);
 		const isGen9BH = genIdent === 9.9;
 		const isSSB = genIdent === 9.6;
@@ -355,6 +356,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isStadium) genStr += 'stadium' + (genNum > 1 ? genNum : '');
 			if (isVGCPlat) genStr = 'gen4vgcplat';
 			if (isGay) genStr = 'gen9vgcgay';
+			if (isSpring) genStr = 'gen9vgcspringmayhem';
 			if (isMet) genStr = 'gen9metronome';
 			if (isSSB) genStr += 'ssb';
 			return genStr;
@@ -431,7 +433,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
 					return species.tier;
 				}
-				if (isVGC || isGay) {
+				if (isVGC || isGay || isSpring) {
 					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
@@ -544,7 +546,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['gen8bdsp'].overrideTier = overrideTier;
 			BattleTeambuilderTable['gen8bdsp'].monotypeBans = monotypeBans;
 			BattleTeambuilderTable['gen8bdsp'].formatSlices = formatSlices;
-		} else if (isVGCPlat || isGay || isMet) {
+		} else if (isVGCPlat || isGay || isMet || isSpring) {
 			BattleTeambuilderTable[gen] = {};
 			BattleTeambuilderTable[gen].learnsets = {};
 			BattleTeambuilderTable[gen].tiers = tiers;
@@ -597,7 +599,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isVGCPlat) {
 				return ["18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
 			}
-			if (isVGC || isGen9BH || isGay) {
+			if (isVGC || isGen9BH || isGay || isSpring) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
 			}
 			if (isDoubles && genNum > 4) {
@@ -973,15 +975,17 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		}
 	}
 
-	const GayLearnsets = Dex.mod('gen9vgcgay').data.Learnsets;
-	for (const id in GayLearnsets) {
-		// const species = Dex.mod('gen9vgcgay').species.get(id);
-		// Allow non-standard pokemon to allow egg moves
-		// if (species.isNonstandard && !['Unobtainable', 'CAP'].includes(species.isNonstandard)) continue;
-		const learnset = GayLearnsets[id].learnset;
-		BattleTeambuilderTable['gen9vgcgay'].learnsets[id] = {};
-		for (const moveid in learnset) {
-			BattleTeambuilderTable['gen9vgcgay'].learnsets[id][moveid] = '9';
+	for (const format of ['gen9vgcgay', 'gen9vgcspringmayhem']) {
+		const TempLearnsets = Dex.mod(format).data.Learnsets;
+		for (const id in TempLearnsets) {
+			// const species = Dex.mod(format).species.get(id);
+			// Allow non-standard pokemon to allow egg moves
+			// if (species.isNonstandard && !['Unobtainable', 'CAP'].includes(species.isNonstandard)) continue;
+			const learnset = TempLearnsets[id].learnset;
+			BattleTeambuilderTable[format].learnsets[id] = {};
+			for (const moveid in learnset) {
+				BattleTeambuilderTable[format].learnsets[id][moveid] = '9';
+			}
 		}
 	}
 
@@ -1209,7 +1213,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	// Mods
 	//
 
-	for (const mod of ['gen7letsgo', 'gen8bdsp', 'gen9ssb', 'gen4vgcplat', 'gen9vgcgay']) {
+	for (const mod of ['gen7letsgo', 'gen8bdsp', 'gen9ssb', 'gen4vgcplat', 'gen9vgcgay', 'gen9vgcspringmayhem']) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);

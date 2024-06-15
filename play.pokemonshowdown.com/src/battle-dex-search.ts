@@ -810,6 +810,10 @@ abstract class BattleTypedSearch<T extends SearchType> {
 				table = table['gen9vgcgay'];
 				genChar = `${gen}`;
 			}
+			if (this.format?.startsWith('vgcspringmayhem')) {
+				table = table['gen9vgcspringmayhem'];
+				genChar = `${gen}`;
+			}
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 			if (this.formatType?.startsWith('vgcplat')) {
 				table = table['gen4vgcplat'];
@@ -835,6 +839,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.format?.startsWith('metronomeffa') ? 'gen9metronome' :
 			this.formatType?.startsWith('vgcplat') ? 'gen4vgcplat' :
 			this.format.startsWith('vgcgay') ? 'gen9vgcgay' :
+			this.format.startsWith('vgcspringmayhem') ? 'gen9vgcspringmayhem' :
 			this.formatType === 'doubles' ? `gen${gen}doubles` :
 			this.formatType === 'letsgo' ? 'gen7letsgo' :
 			this.formatType === 'bdsp' ? 'gen8bdsp' :
@@ -944,6 +949,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			table = table['gen9metronome'];
 		} else if (format.startsWith("vgcgay")) {
 			table = table['gen9vgcgay'];
+		} else if (format.startsWith("vgcspringmayhem")) {
+			table = table['gen9vgcspringmayhem'];
 		} else if (format.startsWith("vgcplat")) {
 			table = table['gen4vgcplat'];
 		} else if (isVGCOrBS) {
@@ -1275,6 +1282,8 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 			table = table['gen4vgcplat'];
 		} else if (this.format.startsWith('vgcgay')) {
 			table = table['gen9vgcgay'];
+		} else if (this.format.startsWith('vgcspringmayhem')) {
+			table = table['gen9vgcspringmayhem'];
 		} else if (this.formatType === 'natdex') {
 			table = table['gen' + this.dex.gen + 'natdex'];
 		} else if (this.formatType === 'metronome') {
@@ -1612,7 +1621,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			(/^battle(spot|stadium|festival)/.test(format) || format.startsWith('bss') ||
 				format.startsWith('vgc') || (dex.gen === 9 && this.formatType !== 'natdex'));
 
-		if (this.format.includes("vgcgay")) regionBornLegality = false;
+		if (this.format.includes("vgcgay") || this.format.includes("vgcspringmayhem")) regionBornLegality = false;
 
 		let learnsetid = this.firstLearnsetid(species.id);
 		let moves: string[] = [];
@@ -1624,6 +1633,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('vgcplat')) lsetTable = lsetTable['gen4vgcplat'];
 		if (this.format.startsWith('vgcgay')) lsetTable = lsetTable['gen9vgcgay'];
+		if (this.format.startsWith('vgcspringmayhem')) lsetTable = lsetTable['gen9vgcspringmayhem'];
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
 		if (this.formatType?.startsWith('svdlc1')) lsetTable = lsetTable['gen9dlc1'];
