@@ -451,7 +451,7 @@ License: GPLv2
 	background: #AAAAAA url(../fx/weather-darkness.png) no-repeat scroll left top;
 	color: #000000;
 }
-.ghostweather {
+.twilightzoneweather {
 	background: #AAAAAA url(../fx/weather-ghost.jpg) no-repeat scroll left top;
 	color: #666666;
 }
@@ -464,10 +464,16 @@ License: GPLv2
 	background: #EEAACC url(../fx/weather-mistyterrain.png) no-repeat scroll left top;
 	color: #551144;
 }
+.loveintheairweather {
+	background: #EEAACC url(../fx/weather-loveintheair.jpg) no-repeat scroll left top;
+	color: #551144;
+}
+.thunderstormweather,
 .electricterrainweather {
 	background: #EEEEAA url(../fx/weather-electricterrain.png) no-repeat scroll left top;
 	color: #444411;
 }
+.pollenweather,
 .grassyterrainweather {
 	background: #CCEEAA url(../fx/weather-grassyterrain.png) no-repeat scroll left top;
 	color: #335511;
