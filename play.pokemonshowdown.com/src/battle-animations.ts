@@ -960,6 +960,7 @@ export class BattleScene implements BattleSceneStub {
 				twilightzone: 'Twilight Zone',
 				thunderstorm: 'Thunderstorm',
 				pollen: 'Pollen',
+				loveintheair: 'Love In The Air',
 				hail: 'Hail',
 				snow: 'Snow',
 				deltastream: 'Strong Winds',
