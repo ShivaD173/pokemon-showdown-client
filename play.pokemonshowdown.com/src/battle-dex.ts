@@ -934,6 +934,7 @@ class ModdedDex {
 		iu: 40,
 		"8ubl": 40,
 		"8u": 45,
+		ur: 45,
 		nfe: 45,
 		lc: 45,
 		"9ubl": 45,
