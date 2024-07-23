@@ -406,7 +406,7 @@ function toId() {
 			this.supports = {};
 
 			// down
-			// if (document.location.hostname === 'play.pokemonshowdown.com') this.down = true;
+			// if (document.location.hostname === 'play.pokemonshowdown.com' || document.location.hostname === 'smogtours.psim.us') this.down = true;
 			// this.down = true;
 
 			this.addRoom('');
@@ -459,7 +459,8 @@ function toId() {
 					var settings = Dex.prefs('serversettings') || {};
 					if (Object.keys(settings).length) app.user.set('settings', settings);
 					// HTML5 history throws exceptions when running on file://
-					Backbone.history.start({pushState: !Config.testclient});
+					var useHistory = !Config.testclient && (location.pathname.slice(-5) !== '.html');
+					Backbone.history.start({pushState: useHistory});
 					app.ignore = app.loadIgnore();
 				});
 			}
@@ -695,6 +696,11 @@ function toId() {
 			// load custom colors from loginserver
 			$.get('/config/colors.json', {}, function (data) {
 				Object.assign(Config.customcolors, data);
+			});
+
+			// get coil values too
+			$.get('/config/coil.json', {}, function (data) {
+				Object.assign(LadderRoom.COIL_B, data);
 			});
 
 			this.initializeConnection();
