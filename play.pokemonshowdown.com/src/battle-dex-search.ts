@@ -1050,7 +1050,16 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			} else {
 				tierSet = tierSet.slice(slices.Regular);
 			}
-		} else if (format.endsWith('ou')) tierSet = tierSet.slice(slices.OU);
+
+			if (format.endsWith('regh')) {
+				tierSet = tierSet.filter(([type, id]) => {
+					const tags = Dex.species.get(Dex.species.get(id).baseSpecies).tags;
+					return !tags.includes('Sub-Legendary') && !tags.includes('Paradox') &&
+						// The game does not classify these as Paradox Pokemon (Booster Energy can be knocked off)
+						!['gougingfire', 'ironboulder', 'ironcrown', 'ragingbolt'].includes(id);
+				});
+			}
+		} else if (format === 'ou') tierSet = tierSet.slice(slices.OU);
 		else if (format.endsWith('tiershift')) tierSet = tierSet.slice(slices.OU);
 		else if (format.endsWith('uu')) tierSet = tierSet.slice(slices.UU);
 		else if (format.endsWith('ru')) tierSet = tierSet.slice(slices.RU || slices.UU);
