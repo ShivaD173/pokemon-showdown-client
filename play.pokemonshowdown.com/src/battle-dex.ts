@@ -220,14 +220,8 @@ const Dex = new class implements ModdedDex {
 		if (format.includes('bdsp')) {
 			return this.mod('gen8bdsp' as ID, format);
 		}
-		if (format.includes('vgcplat')) {
-			return this.mod('gen4vgcplat' as ID, format);
-		}
 		if (format.includes('vgcgay')) {
 			return this.mod('gen9vgcgay' as ID, format);
-		}
-		if (format.includes('vgcspringmayhem')) {
-			return this.mod('gen9vgcspringmayhem' as ID, format);
 		}
 		if (format.includes('tiershift')) {
 			return this.mod(format.slice(0, 4) as ID, format);
@@ -1010,11 +1004,7 @@ class ModdedDex {
 		}
 		const gen = parseInt(modid.substr(3, 1), 10);
 		if (!modid.startsWith('gen') || !gen) throw new Error("Unsupported modid");
-		if (modid.endsWith("vgcplat")) {
-			this.gen = 9;
-		} else {
-			this.gen = gen;
-		}
+		this.gen = gen;
 	}
 	moves = {
 		get: (name: string): Move => {

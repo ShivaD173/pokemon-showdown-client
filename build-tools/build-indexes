@@ -322,7 +322,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const LC = GENS.map(num => num + 0.7);
 	const STADIUM = [2.04, 1.04];
 	const NATDEX = [9.1, 8.1];
-	const ADDED = [-4.81, -9.81, 9.21, -9.82];
+	const ADDED = [-9.81, 9.21];
 	const OTHER = [9.9, 9.6, 9.411, 9.41, 9.401, 9.4, 9.2, -9.4, -9.401, 8.6, 8.4, 8.2, 8.1, -8.4, -8.6, 7.1, 5.1];
 
 	// process.stdout.write("\n  ");
@@ -339,9 +339,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isStadium = ('' + genIdent).endsWith('.04');
 		const isDoubles = (genIdent < 0);
 		const isVGC = ('' + genIdent).endsWith('.5');
-		const isVGCPlat = (genIdent === -4.81);
 		const isGay = (genIdent === -9.81);
-		const isSpring = (genIdent === -9.82);
 		const isMet = (genIdent === 9.21);
 		const isGen9BH = genIdent === 9.9;
 		const isSSB = genIdent === 9.6;
@@ -355,9 +353,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isPreDLC) genStr += 'predlc';
 			if (isSVDLC1) genStr += 'dlc1';
 			if (isStadium) genStr += 'stadium' + (genNum > 1 ? genNum : '');
-			if (isVGCPlat) genStr = 'gen4vgcplat';
 			if (isGay) genStr = 'gen9vgcgay';
-			if (isSpring) genStr = 'gen9vgcspringmayhem';
 			if (isMet) genStr = 'gen9metronome';
 			if (isSSB) genStr += 'ssb';
 			if (isBW1) genStr += 'bw1';
@@ -430,13 +426,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (species.name === 'Pikachu-Alola') return 'Illegal';
 					return species.tier;
 				}
-				if (isVGCPlat) {
-					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
-					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
-					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
-					return species.tier;
-				}
-				if (isVGC || isGay || isSpring) {
+				if (isVGC) {
 					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';
 					if (baseSpecies.tags.includes('Restricted Legendary')) return 'Restricted Legendary';
@@ -461,7 +451,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				if (species.tier === 'CAP' || species.tier === 'CAP NFE' || species.tier === 'CAP LC') {
 					return species.tier;
 				}
-				if (isDoubles && genNum > 4) {
+				if (isDoubles && genNum > 4 && !isGay) {
 					return species.doublesTier;
 				}
 				if (isNatDex || (isPreDLC && genNum === 9.41) || (isSVDLC1 && genNum === 9.411)) {
@@ -555,7 +545,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['gen8bdsp'].overrideTier = overrideTier;
 			BattleTeambuilderTable['gen8bdsp'].monotypeBans = monotypeBans;
 			BattleTeambuilderTable['gen8bdsp'].formatSlices = formatSlices;
-		} else if (isVGCPlat || isGay || isMet || isSpring) {
+		} else if (isGay || isMet) {
 			BattleTeambuilderTable[gen] = {};
 			BattleTeambuilderTable[gen].learnsets = {};
 			BattleTeambuilderTable[gen].tiers = tiers;
@@ -616,13 +606,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		}
 
 		const tierOrder = (() => {
-			if (isVGCPlat) {
-				return ["18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
-			}
-			if (isVGC || isGen9BH || isGay || isSpring) {
+			if (isVGC || isGen9BH) {
 				return ["Mythical", "Restricted Legendary", "Regular", "NFE", "LC"];
 			}
-			if (isDoubles && genNum > 4) {
+			if (isDoubles && genNum > 4 && !isGay) {
 				return ["DUber", "(DUber)", "DOU", "DBL", "(DOU)", "DUU", "(DUU)", "New", "NFE", "LC"];
 			}
 			return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "(Uber)", "OU", "(OU)", "UUBL", "UU", "RUBL", "RU", "NUBL", "NU", "PUBL", "PU", "ZUBL", "ZU", "SUBL", "SU", "IUBL", "IU", "6UBL", "6U", "7UBL", "7U", "8UBL", "8U", "9UBL", "9U", "10UBL", "10U", "UR", "New", "NFE", "LC", "Unreleased", "11UBL", "11U"];
@@ -669,7 +656,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		if (genNum === 6) unreleasedItems.push(['header', "Unreleased"]);
 		for (const id of itemList) {
 			const item = Dex.mod(gen).items.get(id);
-			if (item.gen > genNum && !isVGCPlat) {
+			if (item.gen > genNum) {
 				continue;
 			}
 			if (item.isNonstandard && !isMetBattle) {
@@ -709,7 +696,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				greatItems.push(id);
 				break;
 			case 'mentalherb':
-				if (genNum > 4 || isVGCPlat) greatItems.push(id);
+				if (genNum > 4) greatItems.push(id);
 				else poorItems.push(id);
 				break;
 			case 'lumberry':
@@ -995,18 +982,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		}
 	}
 
-	const VGCPlatLearnsets = Dex.mod('gen4vgcplat').data.Learnsets;
-	for (const id in VGCPlatLearnsets) {
-		const species = Dex.mod('gen4vgcplat').species.get(id);
-		if (species.isNonstandard && !['Unobtainable', 'CAP'].includes(species.isNonstandard)) continue;
-		const learnset = VGCPlatLearnsets[id].learnset;
-		BattleTeambuilderTable['gen4vgcplat'].learnsets[id] = {};
-		for (const moveid in learnset) {
-			BattleTeambuilderTable['gen4vgcplat'].learnsets[id][moveid] = '4';
-		}
-	}
-
-	for (const format of ['gen9vgcgay', 'gen9vgcspringmayhem']) {
+	for (const format of ['gen9vgcgay']) {
 		const TempLearnsets = Dex.mod(format).data.Learnsets;
 		for (const id in TempLearnsets) {
 			// const species = Dex.mod(format).species.get(id);
@@ -1248,7 +1224,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	// Mods
 	//
 
-	for (const mod of ['gen5bw1', 'gen7letsgo', 'gen8bdsp', 'gen9ssb', 'gen4vgcplat', 'gen9vgcgay', 'gen9vgcspringmayhem']) {
+	for (const mod of ['gen5bw1', 'gen7letsgo', 'gen8bdsp', 'gen9ssb', 'gen9vgcgay']) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);
