@@ -1516,8 +1516,8 @@ export class BattleScene implements BattleSceneStub {
 	updateStatbarIfExists(pokemon: Pokemon, updatePrevhp?: boolean, updateHp?: boolean) {
 		return pokemon.sprite.updateStatbarIfExists(pokemon, updatePrevhp, updateHp);
 	}
-	animTransform(pokemon: Pokemon, isCustomAnim?: boolean, isPermanent?: boolean) {
-		return pokemon.sprite.animTransform(pokemon, isCustomAnim, isPermanent);
+	animTransform(pokemon: Pokemon, useSpeciesAnim?: boolean, isPermanent?: boolean) {
+		return pokemon.sprite.animTransform(pokemon, useSpeciesAnim, isPermanent);
 	}
 	clearEffects(pokemon: Pokemon) {
 		return pokemon.sprite.clearEffects();
@@ -2503,7 +2503,12 @@ export class PokemonSprite extends Sprite {
 			});
 		}
 	}
-	animTransform(pokemon: Pokemon, isCustomAnim?: boolean, isPermanent?: boolean) {
+	/**
+	 * @param pokemon
+	 * @param useSpeciesAnim false = Transform the move or Imposter the ability
+	 * @param isPermanent false = reverts on switch-out
+	 */
+	animTransform(pokemon: Pokemon, useSpeciesAnim?: boolean, isPermanent?: boolean) {
 		if (!this.scene.animating && !isPermanent) return;
 		let sp = Dex.getSpriteData(pokemon, this.isFrontSprite, {
 			gen: this.scene.gen,
@@ -2530,8 +2535,9 @@ export class PokemonSprite extends Sprite {
 		if (!this.scene.animating) return;
 		let speciesid = toID(pokemon.getSpeciesForme());
 		let doCry = false;
+		let skipAnim = false;
 		const scene = this.scene;
-		if (isCustomAnim) {
+		if (useSpeciesAnim) {
 			if (speciesid === 'kyogreprimal') {
 				BattleOtherAnims.primalalpha.anim(scene, [this]);
 				doCry = true;
@@ -2549,6 +2555,8 @@ export class PokemonSprite extends Sprite {
 				BattleOtherAnims.schoolingout.anim(scene, [this]);
 			} else if (speciesid === 'mimikyubusted' || speciesid === 'mimikyubustedtotem') {
 				// standard animation
+			} else if (speciesid === 'palafinhero') {
+				skipAnim = true;
 			} else {
 				BattleOtherAnims.megaevo.anim(scene, [this]);
 				doCry = true;
@@ -2564,9 +2572,10 @@ export class PokemonSprite extends Sprite {
 			xscale: 0,
 			opacity: 0,
 		}, sp));
-		if (speciesid === 'palafinhero') {
+		if (skipAnim) {
 			this.$el.replaceWith($newEl);
 			this.$el = $newEl;
+			this.animReset();
 		} else {
 			this.$el.animate(this.scene.pos({
 				x: this.x,
