@@ -2098,7 +2098,7 @@ class BattleTooltips {
 		}
 		if (move.flags['punch']) {
 			if (this.battle.dex.modid.includes('vgcgay')) {
-				value.abilityModify(1.4, 'Iron Fist');
+				value.abilityModify(1.3, 'Iron Fist');
 			} else {
 				value.abilityModify(1.2, 'Iron Fist');
 			}
