@@ -2712,7 +2712,7 @@ export class Battle {
 			let fromeffect = Dex.getEffect(kwArgs.from);
 			poke.removeVolatile(effect.id);
 
-			if (kwArgs.silent) {
+			if (kwArgs.silent && !(effect.id === 'protosynthesis' || effect.id === 'quarkdrive')) {
 				// do nothing
 			} else {
 				switch (effect.id) {
