@@ -613,9 +613,6 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			format = format.slice(7) as ID;
 			if (!format) format = 'ou' as ID;
 		}
-		if (format.startsWith('vgc')) {
-			this.formatType = 'doubles';
-		}
 		if (format.startsWith('vgc')) this.formatType = 'doubles';
 		if (format === 'vgc2020') this.formatType = 'ssdlc1doubles';
 		if (format === 'vgc2023regulationd') this.formatType = 'predlcdoubles';
@@ -1685,8 +1682,17 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						continue;
 					}
 					if (
-						this.formatType?.includes('predlc') && this.formatType !== 'predlcnatdex' &&
-						BattleTeambuilderTable['gen9predlc']?.nonstandardMoves.includes(moveid)
+						!learnsetEntry.includes(gen) &&
+						(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
+					) {
+						continue;
+					}
+					if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
+						continue;
+					}
+					if (
+						this.formatType?.startsWith('dlc1') &&
+						BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
 					) {
 						continue;
 					}
