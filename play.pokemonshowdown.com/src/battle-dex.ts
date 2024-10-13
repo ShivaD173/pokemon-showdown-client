@@ -220,7 +220,7 @@ const Dex = new class implements ModdedDex {
 		if (format.includes('bdsp')) {
 			return this.mod('gen8bdsp' as ID, format);
 		}
-		if (format.includes('vgcgay')) {
+		if (format.includes('vgcpride')) {
 			return this.mod('gen9vgcgay' as ID, format);
 		}
 		if (format.includes('tiershift')) {
@@ -979,7 +979,7 @@ class ModdedDex {
 	constructor(modid: ID, format: string = "") {
 		this.modid = modid;
 		this.format = format;
-		if (format !== "" && format !== "gen9su" && format !== "gen9vgcgayrestricted") {
+		if (format !== "" && format !== "gen9su") {
 			this.statsData = {
 				info: {
 					metagame: "",

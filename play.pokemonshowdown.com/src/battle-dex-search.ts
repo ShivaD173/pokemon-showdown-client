@@ -812,7 +812,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		while (learnsetid) {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
-			if (this.format?.startsWith('vgcgay')) {
+			if (this.format?.startsWith('vgcpride')) {
 				table = table['gen9vgcgay'];
 				genChar = `${gen}`;
 			}
@@ -838,7 +838,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		const gen = this.dex.gen;
 		const tableKey =
 			this.format?.startsWith('metronomeffa') ? 'gen9metronome' :
-			this.format.startsWith('vgcgay') ? 'gen9vgcgay' :
+			this.format.startsWith('vgcpride') ? 'gen9vgcgay' :
 			this.formatType === 'doubles' ? `gen${gen}doubles` :
 			this.formatType === 'letsgo' ? 'gen7letsgo' :
 			this.formatType === 'bdsp' ? 'gen8bdsp' :
@@ -956,7 +956,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 
 		} else if (format.startsWith("metronomeffa")) {
 			table = table['gen9metronome'];
-		} else if (format.startsWith("vgcgay")) {
+		} else if (format.startsWith("vgcpride")) {
 			table = table['gen9vgcgay'];
 		} else if (isVGCOrBS) {
 			table = table['gen' + dex.gen + 'vgc'];
@@ -1309,7 +1309,7 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) {
 			table = table['gen8bdsp'];
-		} else if (this.format.startsWith('vgcgay')) {
+		} else if (this.format.startsWith('vgcpride')) {
 			table = table['gen9vgcgay'];
 		} else if (this.formatType === 'bw1') {
 			table = table['gen5bw1'];
@@ -1650,7 +1650,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 			(/^battle(spot|stadium|festival)/.test(format) || format.startsWith('bss') ||
 				format.startsWith('vgc') || (dex.gen === 9 && this.formatType !== 'natdex'));
 
-		if (this.format.includes("vgcgay")) regionBornLegality = false;
+		if (this.format.includes("vgcpride")) regionBornLegality = false;
 
 		let learnsetid = this.firstLearnsetid(species.id);
 		let moves: string[] = [];
@@ -1660,7 +1660,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		let lsetTable = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) lsetTable = lsetTable['gen8bdsp'];
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
-		if (this.format.startsWith('vgcgay')) lsetTable = lsetTable['gen9vgcgay'];
+		if (this.format.startsWith('vgcpride')) lsetTable = lsetTable['gen9vgcgay'];
 		if (this.formatType === 'bw1') lsetTable = lsetTable['gen5bw1'];
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
@@ -1715,7 +1715,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						moves.push(
 							'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
 						);
-						if (this.format.startsWith('vgcgay')) moves.push('hiddenpowerfairy');
+						if (this.format.startsWith('vgcpride')) moves.push('hiddenpowerfairy');
 					}
 				}
 			}

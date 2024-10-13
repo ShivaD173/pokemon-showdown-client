@@ -1028,8 +1028,8 @@
 			if (!noChoice) {
 				this.curFormat = formatid;
 				if (!this.curFormat) {
-					if (BattleFormats['gen9vgcgayrandombattle']) {
-						this.curFormat = 'gen9vgcgayrandombattle';
+					if (BattleFormats['gen9vgcpriderandombattle']) {
+						this.curFormat = 'gen9vgcpriderandombattle';
 					} else for (var i in BattleFormats) {
 						if (!BattleFormats[i].searchShow || !BattleFormats[i].challengeShow) continue;
 						this.curFormat = i;

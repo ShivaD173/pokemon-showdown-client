@@ -3400,7 +3400,7 @@ export class Battle {
 			if (this.tier.includes(`Let's Go`)) {
 				this.dex = Dex.mod('gen7letsgo' as ID);
 			}
-			if (this.tier.includes('VGC Gay')) {
+			if (this.tier.includes('VGC Pride')) {
 				this.dex = Dex.mod('gen9vgcgay' as ID);
 			}
 			if (this.tier.includes('Tier Shift')) {
