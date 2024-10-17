@@ -1029,7 +1029,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		if (format.endsWith('ubers') || format === 'uber' || format === 'ubersuu' || format === 'nationaldexdoubles'
 			|| format.endsWith('restricted')) {
 			tierSet = tierSet.slice(slices.Uber);
-		} else if (format === "vgcgay") {
+		} else if (format === "vgcpride") {
 			tierSet = tierSet.slice(slices.OU);
 		} else if (isVGCOrBS || (isHackmons && dex.gen === 9 && !this.formatType)) {
 			if (format.endsWith('series13') || isHackmons) {
