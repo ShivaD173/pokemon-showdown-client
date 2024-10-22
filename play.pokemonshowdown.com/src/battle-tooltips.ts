@@ -2099,6 +2099,7 @@ class BattleTooltips {
 		if (move.flags['punch']) {
 			if (this.battle.dex.modid.includes('vgcgay')) {
 				value.abilityModify(1.3, 'Iron Fist');
+				value.abilityModify(1.1, 'Mystic Fist');
 			} else {
 				value.abilityModify(1.2, 'Iron Fist');
 			}
@@ -2113,6 +2114,9 @@ class BattleTooltips {
 		if (this.battle.dex.modid.includes('vgcgay')) {
 			if (move.flags['pulse'] || move.flags['bullet'] || move.name.includes('Cannon')) {
 				value.abilityModify(1.3, "Mega Launcher");
+			}
+			if (move.name.toLowerCase().includes('hammer')) {
+				value.abilityModify(1.3, "Hammer Time");
 			}
 		} else {
 			if (move.flags['pulse']) {
@@ -2129,7 +2133,11 @@ class BattleTooltips {
 			value.abilityModify(1.5, "Toxic Boost");
 		}
 		if (['Rock', 'Ground', 'Steel'].includes(moveType) && this.battle.weather === 'sandstorm') {
-			if (value.tryAbility("Sand Force")) value.weatherModify(1.3, "Sandstorm", "Sand Force");
+			if (this.battle.dex.modid.includes('vgcgay')) {
+				if (value.tryAbility("Sand Force")) value.weatherModify(1.5, "Sandstorm", "Sand Force");
+			} else {
+				if (value.tryAbility("Sand Force")) value.weatherModify(1.3, "Sandstorm", "Sand Force");
+			}
 		}
 		if (move.secondaries) {
 			value.abilityModify(1.3, "Sheer Force");
