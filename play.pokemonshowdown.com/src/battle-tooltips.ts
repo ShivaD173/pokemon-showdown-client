@@ -1129,7 +1129,6 @@ class BattleTooltips {
 						stats.spa = Math.floor(stats.spa * 1.5);
 					}
 					if (ability === 'orichalcumpulse') {
-						stats.atk = Math.floor(stats.atk * 1.333333);
 						stats.atk = Math.floor(stats.atk * 1.3333);
 						if (this.battle.dex.modid.includes('vgcgay')) {
 							stats.spa = Math.floor(stats.spa * 1.3333);
@@ -1198,7 +1197,7 @@ class BattleTooltips {
 					// Pokemon with Hisui evolutions
 					evoSpecies.isNonstandard === "Unobtainable";
 		});
-		if (item === 'eviolite' && (isNFE || this.battle.dex.species.get(serverPokemon.speciesForme).id === 'dipplin')) {
+		if (item === 'eviolite' && (isNFE || ["mrmimegalar", "dipplin"].includes(this.battle.dex.species.get(serverPokemon.speciesForme).id))) {
 			stats.def = Math.floor(stats.def * 1.5);
 			stats.spd = Math.floor(stats.spd * 1.5);
 		}
