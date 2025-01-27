@@ -1638,7 +1638,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (move.flags['charge']) {
 			return itemid === 'powerherb';
 		}
-		if (move.flags['recharge']) {
+		if (move.flags['recharge'] && !this.format.startsWith("vgcpride")) {
 			return false;
 		}
 		if (move.flags['slicing'] && abilityid === 'sharpness') {
