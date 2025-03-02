@@ -3438,7 +3438,7 @@ export class Battle {
 				this.dex = Dex.mod('gen9vgcgay' as ID);
 			}
 			if (this.tier.includes('Tier Shift')) {
-				this.dex = Dex.forGen(this.gen, "gen" + this.gen + "tiershift");
+				this.dex = Dex.forGen(this.gen, `gen${this.gen}tiershift`);
 			}
 			if (this.tier.includes('Super Staff Bros')) {
 				this.dex = Dex.mod('gen9ssb' as ID);

@@ -246,7 +246,7 @@
 				publ: "PUBL",
 				zubl: "ZUBL"
 			};
-			var tier = {name: tierTable[id] || id.toUpperCase()};
+			var tier = { name: tierTable[id] || id.toUpperCase() };
 			return this.renderTierRow(tier, matchStart, matchLength, errorMessage);
 		case 'category':
 			var category = { name: id[0].toUpperCase() + id.substr(1), id: id };

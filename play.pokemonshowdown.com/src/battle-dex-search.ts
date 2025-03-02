@@ -1031,8 +1031,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		}
 		let tierSet: SearchRow[] = table.tierSet;
 		let slices: { [k: string]: number } = table.formatSlices;
-		if (format === 'ubers' || format === 'uber' || format === 'ubersuu' || format === 'nationaldexdoubles'
-			|| format.endsWith('restricted')) {
+		if (format === 'ubers' || format === 'uber' || format === 'ubersuu' || format === 'nationaldexdoubles' ||
+			format.endsWith('restricted')) {
 			tierSet = tierSet.slice(slices.Uber);
 		} else if (format === "vgcpride") {
 			tierSet = tierSet.slice(slices.OU);
@@ -1164,9 +1164,9 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 					const isNFE = this.dex.species.get(species.name).evos?.some(evo => {
 						const evoSpecies = this.dex.species.get(evo);
 						return !evoSpecies.isNonstandard ||
-								evoSpecies.isNonstandard === this.dex.species.get(species.name)?.isNonstandard ||
-								// Pokemon with Hisui evolutions
-								evoSpecies.isNonstandard === "Unobtainable";
+							evoSpecies.isNonstandard === this.dex.species.get(species.name)?.isNonstandard ||
+						// Pokemon with Hisui evolutions
+							evoSpecies.isNonstandard === "Unobtainable";
 					});
 					if (!isNFE) return false;
 				} else if (this.getTier(species) !== value) return false;

@@ -274,7 +274,7 @@ export const Dex = new class implements ModdedDex {
 	loadedSpriteData = { xy: 1, bw: 0 };
 	moddedDexes: { [mod: string]: ModdedDex } = {};
 
-	mod(modid: ID, format: string = ""): ModdedDex {
+	mod(modid: ID, format = ""): ModdedDex {
 		const modidStr = format === "" ? modid : format;
 		if (modidStr === 'gen9') return this;
 		if (!window.BattleTeambuilderTable) return this;
@@ -284,7 +284,7 @@ export const Dex = new class implements ModdedDex {
 		this.moddedDexes[modidStr] = new ModdedDex(modid, format);
 		return this.moddedDexes[modidStr];
 	}
-	forGen(gen: number, format: string = "") {
+	forGen(gen: number, format = "") {
 		if (!gen) return this;
 		return this.mod(`gen${gen}` as ID, format);
 	}
@@ -301,7 +301,7 @@ export const Dex = new class implements ModdedDex {
 		if (format.includes('tiershift')) {
 			return this.mod(format.slice(0, 4) as ID, format);
 		}
-		if (format.slice(0, 3) === 'gen') {
+		if (format.startsWith('gen')) {
 			const gen = (Number(format.charAt(3)) || 6);
 			return this.forGen(gen, format);
 		}
@@ -497,12 +497,14 @@ export const Dex = new class implements ModdedDex {
 				if (!data.tier && data.baseSpecies && toID(data.baseSpecies) !== id) {
 					data.tier = this.species.get(data.baseSpecies).tier;
 				}
-				data.nfe = data.id === 'dipplin' || !!(data as Species).evos?.some(evo => {
-					const evoSpecies = this.species.get(evo);
-					return !evoSpecies.isNonstandard || evoSpecies.isNonstandard === data.isNonstandard ||
+
+				data.nfe = ["mrmimegalar", "dipplin", "clefairy"].includes(data.id) ||
+					!!(data as Species).evos?.some(evo => {
+						const evoSpecies = this.species.get(evo);
+						return !evoSpecies.isNonstandard || evoSpecies.isNonstandard === data.isNonstandard ||
 						// Pokemon with Hisui evolutions
-						evoSpecies.isNonstandard === "Unobtainable";
-				});
+							evoSpecies.isNonstandard === "Unobtainable";
+					});
 				species = new Species(id, name, data, 0);
 				window.BattlePokedex[id] = species;
 			}
@@ -952,25 +954,25 @@ export const Dex = new class implements ModdedDex {
 
 interface ChaosResponse {
 	info: {
-		metagame: string;
-		cutoff: number;
-		"number of battles": number;
+		metagame: string,
+		cutoff: number,
+		"number of battles": number,
 	};
 	data: {
-		[speciesForme: string]: ChaosPokemon;
+		[speciesForme: string]: ChaosPokemon,
 	};
 }
 
 interface ChaosPokemon {
 	rawCount: number;
 	viabilityCeiling: [number, number, number, number];
-	abilities: { [name: string]: number; };
-	teraTypes: { [name: string]: number; };
-	items: { [name: string]: number; };
-	spreads: { [spread: string]: number; };
-	moves: { [name: string]: number; };
-	teammates: { [value: string]: number; };
-	checksAndCounters: { [value: string]: number; };
+	abilities: { [name: string]: number };
+	teraTypes: { [name: string]: number };
+	items: { [name: string]: number };
+	spreads: { [spread: string]: number };
+	moves: { [name: string]: number };
+	teammates: { [value: string]: number };
+	checksAndCounters: { [value: string]: number };
 	usage: number;
 }
 
@@ -991,7 +993,7 @@ async function fetchStatsData(format: string): Promise<ChaosResponse> {
 }
 
 export class ModdedDex {
-	static readonly preRuBoosts: {[tier: string]: number} = {
+	static readonly preRuBoosts: { [tier: string]: number } = {
 		uu: 15,
 		rubl: 15,
 		ru: 15,
@@ -1017,7 +1019,7 @@ export class ModdedDex {
 		"11ubl": 55,
 		"11u": 60,
 	};
-	static readonly postRuBoosts: {[tier: string]: number} = {
+	static readonly postRuBoosts: { [tier: string]: number } = {
 		uu: 15,
 		rubl: 15,
 		ru: 20,
@@ -1055,7 +1057,7 @@ export class ModdedDex {
 	};
 	statsData: ChaosResponse | null;
 	pokeballs: string[] | null = null;
-	constructor(modid: ID, format: string = "") {
+	constructor(modid: ID, format = "") {
 		this.modid = modid;
 		this.format = format;
 		if (format !== "" && format !== "gen9su") {
@@ -1068,16 +1070,16 @@ export class ModdedDex {
 				data: {},
 			};
 			fetchStatsData(format)
-			.then(data => {
-				if (data.info["number of battles"] >= 10) {
-					this.statsData = data;
-				} else {
+				.then(data => {
+					if (data.info["number of battles"] >= 10) {
+						this.statsData = data;
+					} else {
+						this.statsData = null;
+					}
+				})
+				.catch(error => {
 					this.statsData = null;
-				}
-			})
-			.catch(error => {
-				this.statsData = null;
-			});
+				});
 		} else {
 			this.statsData = null;
 		}
@@ -1214,12 +1216,13 @@ export class ModdedDex {
 				data.tier = this.species.get(data.baseSpecies).tier;
 			}
 			if (data.gen > this.gen) data.tier = 'Illegal';
-			data.nfe = data.id === 'dipplin' || !!data.evos?.some(evo => {
-				const evoSpecies = this.species.get(evo);
-				return !evoSpecies.isNonstandard || evoSpecies.isNonstandard === data.isNonstandard ||
+			data.nfe = ["mrmimegalar", "dipplin", "clefairy"].includes(data.id) ||
+				!!(data as Species).evos?.some(evo => {
+					const evoSpecies = this.species.get(evo);
+					return !evoSpecies.isNonstandard || evoSpecies.isNonstandard === data.isNonstandard ||
 					// Pokemon with Hisui evolutions
-					evoSpecies.isNonstandard === "Unobtainable";
-			});
+						evoSpecies.isNonstandard === "Unobtainable";
+				});
 
 			if (this.format.includes("tiershift")) {
 				let boosts;
@@ -1242,7 +1245,7 @@ export class ModdedDex {
 				}
 			}
 
-			let usage: number = -1;
+			let usage = -1;
 			if (this.statsData) {
 				usage = 0;
 				if (data.name in this.statsData.data) {
