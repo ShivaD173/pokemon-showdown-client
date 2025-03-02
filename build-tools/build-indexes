@@ -690,8 +690,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			// mainstays
 			case 'choiceband':
 			case 'choicespecs':
-			case 'covertcloak':
-			case 'clearamulet':
 			case 'eviolite':
 				greatItems.push(id);
 				break;
@@ -717,6 +715,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				break;
 			case 'custapberry':
 				greatItems.push(id);
+				break;
 			// just doubles
 			case 'safetygoggles':
 			case 'ejectbutton':
