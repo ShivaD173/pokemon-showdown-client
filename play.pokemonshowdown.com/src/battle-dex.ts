@@ -1198,7 +1198,7 @@ export class ModdedDex {
 			}
 
 			const table = window.BattleTeambuilderTable[this.modid];
-			if (table.overrideTier && id in table.overrideTier) data.tier = table.overrideTier[id];
+			if (table && id in table.overrideTier) data.tier = table.overrideTier[id];
 			if (!data.tier && id.endsWith('totem')) {
 				data.tier = this.species.get(id.slice(0, -5)).tier;
 			}
