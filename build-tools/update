@@ -181,9 +181,12 @@ let replayEmbedContents = fs.readFileSync('play.pokemonshowdown.com/js/replay-em
 // replayEmbedContents = replayEmbedContents.replace(/play\.pokemonshowdown\.com/g, routes.client);
 
 const client_http = "https://" + "staraptorshowdown.com";
-replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/data/teambuilder-tables.js", client_http + "/data/teambuilder-tables.js");
-replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/js/battle-tooltips.js", client_http + "/js/battle-tooltips.js");
-replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/js/battle.js", client_http + "/js/battle.js");
+replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/data/teambuilder-tables.js",
+	client_http + "/data/teambuilder-tables.js");
+replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/js/battle-tooltips.js",
+	client_http + "/js/battle-tooltips.js");
+replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.com/js/battle.js",
+	client_http + "/js/battle.js");
 
 // add news, only if it's actually likely to exist
 process.stdout.write("and news... ");
