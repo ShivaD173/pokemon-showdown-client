@@ -2651,13 +2651,13 @@ function toId() {
 	});
 
 	Config.groups = Config.groups || {
-		'~': {
-			name: "Administrator (~)",
+		'#': {
+			name: "Room Owner (#)",
 			type: 'leadership',
 			order: 10001
 		},
-		'#': {
-			name: "Room Owner (#)",
+		'~': {
+			name: "Administrator (~)",
 			type: 'leadership',
 			order: 10002
 		},
