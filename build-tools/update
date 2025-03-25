@@ -191,8 +191,8 @@ replayEmbedContents = replayEmbedContents.replace("https://play.pokemonshowdown.
 // add news, only if it's actually likely to exist
 process.stdout.write("and news... ");
 // let stdout = '';
-let newsid = 0;
-let news = '[failed to retrieve news]';
+const newsid = 0;
+const news = '[failed to retrieve news]';
 // try {
 // 	stdout = child_process.execSync('php ' + path.resolve(thisDir, 'news-embed.php'), {
 // 		stdio: 'pipe',
