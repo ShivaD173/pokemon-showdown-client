@@ -1298,7 +1298,10 @@ export class BattleTooltips {
 				stats.spd = Math.floor(stats.spd * 1.5);
 			}
 			if (weather === 'deserteddunes' && this.pokemonHasType(pokemon, 'Rock')) {
-				stats.spd = Math.floor(stats.spd * 1.5);
+				stats.spd = Math.floor(stats.spd * 1.25);
+			}
+			if (weather === 'stormsurge' && ability === 'swiftswim') {
+				speedModifiers.push(2);
 			}
 			if (pokemon.status && ability === 'fortifiedmetal') {
 				stats.atk = Math.floor(stats.atk * 1.5);
@@ -1325,6 +1328,10 @@ export class BattleTooltips {
 			}
 			if (ability === 'soulsurfer' && this.battle.hasPseudoWeather('Electric Terrain')) {
 				speedModifiers.push(2);
+			}
+			if (ability === 'orchardsgift' && this.battle.hasPseudoWeather('Grassy Terrain')) {
+				stats.spa = Math.floor(stats.spa * 1.5);
+				stats.spd = Math.floor(stats.spd * 1.5);
 			}
 			if (item === 'eviolite' && this.battle.dex.species.get(serverPokemon.speciesForme).id === 'pichuspikyeared') {
 				stats.def = Math.floor(stats.def * 1.5);
@@ -1695,7 +1702,7 @@ export class BattleTooltips {
 				moveType = 'Stellar';
 			}
 			if (move.id === 'weatherball' && value.weatherModify(0)) {
-				if (this.battle.weather === 'stormsurge') moveType = 'Water';
+				if (this.battle.weather === 'stormsurge' && item.id !== 'utilityumbrella') moveType = 'Water';
 				if (this.battle.weather === 'deserteddunes') moveType = 'Rock';
 			}
 			if (move.id === 'o' || move.id === 'worriednoises') {
@@ -2384,6 +2391,12 @@ export class BattleTooltips {
 			let timeDilationBPMod = 1 + (0.1 * Math.floor(this.battle.turn / 10));
 			if (timeDilationBPMod > 2) timeDilationBPMod = 2;
 			value.abilityModify(timeDilationBPMod, "Time Dilation");
+
+			for (let i = 1; i <= 5 && i <= pokemon.side.faintCounter; i++) {
+				if (pokemon.volatiles[`fallen${i}`]) {
+					value.abilityModify(1 + 0.05 * i, "The Eminence in the Shadow");
+				}
+			}
 		}
 
 		return value;
