@@ -192,14 +192,15 @@ function sort_icon($col) {
 	return '';
 }
 function sort_link(string $col) {
-	global $sort_by, $sort_order, $has_sprites;
+	global $sort_by, $sort_order, $has_sprites, $view;
+	$viewa = (!$has_sprites && $view === 'dir' ? '' : 'view=' . $view);
 	if ($col === $sort_by && $sort_order === 'asc') {
-		return './?' . ($has_sprites ? 'view=dir&' : '') . 'sort=' . $col . '&order=desc';
+		return './?' . ($viewa ? $viewa . '&' : '') . 'sort=' . $col . '&order=desc';
 	}
 	if ($col === $sort_by && $sort_order === 'desc') {
-		return './' . ($has_sprites ? '?view=dir' : '');
+		return './' . ($viewa ? '?' . $viewa : '');
 	}
-	return './?' . ($has_sprites ? 'view=dir&' : '') . 'sort=' . $col;
+	return './?' . ($viewa ? $viewa . '&' : '') . 'sort=' . $col;
 }
 
 if ($sort_by === 'name' || $sort_by === 'N') {
@@ -332,6 +333,16 @@ if ($sort_by === 'name' || $sort_by === 'N') {
 		}
 		.nav a.greenbutton:active {
 			background: linear-gradient(to bottom, #276136, #4ca363);
+			box-shadow: 0 1px 2px rgba(255, 255, 255, 0.45), inset 0.5px 1px -1px rgba(255, 255, 255, 0.5);
+		}
+		.nav a.purplebutton {
+			background: linear-gradient(to bottom,hsl(267, 36.40%, 46.90%),hsl(267, 42.60%, 26.70%));
+		}
+		.nav a.purplebutton:hover {
+			background: linear-gradient(to bottom,hsl(267, 49.30%, 56.70%),hsl(267, 46.00%, 34.10%));
+		}
+		.nav a.purplebutton:active {
+			background: linear-gradient(to bottom,hsl(267, 42.60%, 26.70%),hsl(267, 36.40%, 46.90%));
 			box-shadow: 0 1px 2px rgba(255, 255, 255, 0.45), inset 0.5px 1px -1px rgba(255, 255, 255, 0.5);
 		}
 
@@ -614,6 +625,47 @@ if ($sort_by === 'name' || $sort_by === 'N') {
 		}
 
 		/*********************************************************
+		 * Icons
+		 *********************************************************/
+
+		.dirlist-icons {
+			font-size: 0;
+		}
+		.dirlist-icons li {
+			display: inline-block;
+			vertical-align: top;
+			width: 133px;
+			font-size: 10pt;
+		}
+		.dirlist-icons li.header {
+			display: block;
+			width: auto;
+			height: auto;
+			margin-bottom: 2px;
+		}
+		.dirlist-icons .row, .dirlist-icons a.row:hover {
+			text-align: center;
+			padding: 0;
+			text-decoration: none;
+		}
+		.dirlist-icons .row .filesize, .dirlist-icons .row .filemtime {
+			display: none;
+		}
+		.dirlist-icons .row .icon, .dirlist-icons a.row:hover .icon {
+			display: block;
+			font-size: 60px;
+			margin: 0;
+			width: auto;
+			text-decoration: none;
+		}
+		.dirlist-icons .row .filename {
+			display: block;
+			min-width: auto;
+			width: auto;
+			font-size: 9pt;
+		}
+
+		/*********************************************************
 		 * Spriteindex
 		 *********************************************************/
 
@@ -655,9 +707,9 @@ if ($sort_by === 'name' || $sort_by === 'N') {
 		<div class="nav-wrapper"><ul class="nav">
 			<li><a class="button nav-first" href="//pokemonshowdown.com/"><img src="//play.pokemonshowdown.com/pokemonshowdownbeta.png" srcset="//play.pokemonshowdown.com/pokemonshowdownbeta.png 1x, //play.pokemonshowdown.com/pokemonshowdownbeta@2x.png 2x" alt="Pok&eacute;mon Showdown" width="146" height="44" /> Home</a></li>
 			<li><a class="button" href="//pokemonshowdown.com/dex/">Pok&eacute;dex</a></li>
-			<li><a class="button" href="//replay.pokemonshowdown.com/">Replays</a></li>
-			<li><a class="button" href="//pokemonshowdown.com/ladder/">Ladder</a></li>
-			<li><a class="button nav-last" href="//pokemonshowdown.com/forums/">Forum</a></li>
+			<li><a class="button" href="//replay.pokemonshowdown.com/">Replay</a></li>
+			<li><a class="button purplebutton" href="//smogon.com/dex/" target="_blank">Strategy</a></li>
+			<li><a class="button nav-last purplebutton" href="//smogon.com/forums/" target="_blank">Forum</a></li>
 			<li><a class="button greenbutton nav-first nav-last" href="//play.pokemonshowdown.com/">Play</a></li>
 		</ul></div>
 	</header>
@@ -696,10 +748,10 @@ if (function_exists('dirindex_intro')) {
 }
 $has_sprites = false;
 $special_sprites = function_exists('dirindex_sprites');
+$view = $_GET['view'] ?? ($special_sprites ? 'sprites' : 'dir');
 if ($special_sprites || array_key_exists($rel_dir, $sprites_whitelist)) {
 	$has_sprites = true;
-	$view = $_GET['view'] ?? ($special_sprites ? 'sprites' : 'dir');
-	if ($view !== 'dir') {
+	if ($view === 'sprites') {
 		require_once __DIR__ . '/spriteindex.inc.php';
 		if ($special_sprites) {
 			$sprites = dirindex_sprites();
@@ -720,10 +772,20 @@ if ($special_sprites || array_key_exists($rel_dir, $sprites_whitelist)) {
 		</ul>
 	</div>
 <?php
+} else {
+?>
+	<div>
+		View:
+		<ul class="nav" style="display:inline-block;vertical-align:middle;margin:0 10px 0 0">
+			<li><a class="button nav-first<?= $view === 'dir' ? ' cur' : '' ?>" href="./?view=dir">Directory</a></li>
+			<li><a class="button nav-last<?= $view === 'icons' ? ' cur' : '' ?>" href="./?view=icons">Icons</a></li>
+		</ul>
+	</div>
+<?php
 }
 ?>
 
-		<ul class="dirlist">
+		<ul class="dirlist<?= $view === 'icons' ? ' dirlist-icons' : '' ?>">
 			<li class="header">
 				<a class="icon" href="<?= sort_link('type') ?>">&nbsp;<?= sort_icon('type') ?>
 
