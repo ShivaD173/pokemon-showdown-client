@@ -768,11 +768,11 @@ function toId() {
 
 			Dex.afdMode = mode;
 
-			// if (mode === true) {
-			// 	BattleText = BattleTextAFD;
-			// } else {
-			// 	BattleText = BattleTextNotAFD;
-			// }
+			if (mode === true) {
+				BattleText = BattleTextAFD;
+			} else {
+				BattleText = BattleTextNotAFD;
+			}
 		},
 		/**
 		 * This function establishes the actual connection to the sim server.
