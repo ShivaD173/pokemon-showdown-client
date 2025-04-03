@@ -762,7 +762,7 @@ function toId() {
 					mode = Dex.prefs('afd');
 				} else {
 					// uncomment on April Fools' Day
-					mode = true;
+					// mode = true;
 				}
 			}
 
@@ -1541,7 +1541,7 @@ function toId() {
 						var target = this.pathname.substr(1);
 
 						// keep this in sync with .htaccess
-						var shortLinks = /^(rooms?suggestions?|suggestions?|adminrequests?|forgotpassword|bugs?(reports?)?|formatsuggestions|rules?|faq|credits?|news|privacy|contact|dex|(damage)?calc|insecure|replays?|devdiscord|smogdex|smogcord|forums?)$/;
+						var shortLinks = /^(rooms?suggestions?|suggestions?|adminrequests?|forgotpassword|bugs?(reports?)?|formatsuggestions|rules?|faq|credits?|news|privacy|contact|dex|(damage)?calc|insecure|replays?|devdiscord|smogdex|smogcord|forums?|trustworthy\-dlc\-link)$/;
 						if (target === 'appeal' || target === 'appeals') target = 'view-help-request--appeal';
 						if (target === 'report') target = 'view-help-request--report';
 						if (target === 'requesthelp') target = 'view-help-request--other';
