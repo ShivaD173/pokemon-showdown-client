@@ -273,6 +273,13 @@ export const Dex = new class implements ModdedDex {
 
 	loadedSpriteData = { xy: 1, bw: 0 };
 	moddedDexes: { [mod: string]: ModdedDex } = {};
+
+	/**
+	 * April Fools' Day setting:
+	 * * `true` = FULL, all jokes on
+	 * * `'sprites'` = SPRITES, only sprites and taunts
+	 * * `false | null | undefined` = OFF
+	 */
 	afdMode?: boolean | 'sprites';
 
 	mod(modid: ID, format = ""): ModdedDex {
@@ -345,7 +352,7 @@ export const Dex = new class implements ModdedDex {
 
 	prefs(prop: string) {
 		// @ts-expect-error this is what I get for calling it Storage...
-		return window.Storage?.prefs?.(prop);
+		return window.Storage?.prefs ? window.Storage.prefs(prop) : window.PS?.prefs?.[prop];
 	}
 
 	getShortName(name: string) {
