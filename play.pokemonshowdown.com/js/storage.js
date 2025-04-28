@@ -623,7 +623,9 @@ Storage.compareTeams = function (serverTeam, localTeam) {
 Storage.loadRemoteTeams = function (after) {
 	$.get(app.user.getActionPHP(), { act: 'getteams' }, Storage.safeJSON(function (data) {
 		if (data.actionerror) {
-			return app.addPopupMessage('Error loading uploaded teams: ' + data.actionerror);
+			// Hack to stop error messages on side server
+			// return app.addPopupMessage('Error loading uploaded teams: ' + data.actionerror);
+			return;
 		}
 		for (var i = 0; i < data.teams.length; i++) {
 			var team = data.teams[i];
