@@ -12,11 +12,12 @@
 import { PSConnection, PSLoginServer } from './client-connection';
 import { PSModel, PSStreamModel } from './client-core';
 import type { PSRoomPanel, PSRouter } from './panels';
-import type { ChatRoom } from './panel-chat';
+import { ChatRoom } from './panel-chat';
 import type { MainMenuRoom } from './panel-mainmenu';
 import { Dex, toID, type ID } from './battle-dex';
 import { BattleTextParser, type Args } from './battle-text-parser';
 import type { BattleRoom } from './panel-battle';
+import { PSTeambuilder } from './panel-teamdropdown';
 
 declare const BattleTextAFD: any;
 declare const BattleTextNotAFD: any;
@@ -78,6 +79,7 @@ class PSPrefs extends PSStreamModel<string | null> {
 		hidelinks: false,
 		hideinterstice: true,
 	};
+	nounlink: boolean | null = null;
 
 	/* Battle preferences */
 	ignorenicks: boolean | null = null;
@@ -115,8 +117,12 @@ class PSPrefs extends PSStreamModel<string | null> {
 	effectvolume = 50;
 	musicvolume = 50;
 	notifvolume = 50;
+	uploadprivacy = false;
 
 	afd: boolean | 'sprites' = false;
+
+	highlights: Record<string, string[]> | null = null;
+	logtimes: Record<string, { [roomid: RoomID]: number }> | null = null;
 
 	// PREFS END HERE
 
@@ -263,11 +269,29 @@ class PSPrefs extends PSStreamModel<string | null> {
 export interface Team {
 	name: string;
 	format: ID;
-	packedTeam: string;
 	folder: string;
+	/** note that this can be wrong if .uploaded?.loaded === false */
+	packedTeam: string;
 	/** The icon cache must be cleared (to `null`) whenever `packedTeam` is modified */
 	iconCache: preact.ComponentChildren;
 	key: string;
+	/** `uploaded` will only exist if you're logged into the correct account. otherwise teamid is still tracked */
+	teamid?: number;
+	uploaded?: {
+		teamid: number,
+		notLoaded: boolean | Promise<void>,
+		/** password, if private. null = public, undefined = unknown, not loaded yet */
+		private?: string | null,
+	};
+}
+interface UploadedTeam {
+	name: string;
+	teamid: number;
+	format: ID;
+	/** comma-separated list of species, for generating the icon cache */
+	team: string;
+	/** password, if private */
+	private?: string | null;
 }
 if (!window.BattleFormats) window.BattleFormats = {};
 
@@ -280,6 +304,7 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
 	list: Team[] = [];
 	byKey: { [key: string]: Team | undefined } = {};
 	deletedTeams: [Team, number][] = [];
+	uploading: Team | null = null;
 	constructor() {
 		super();
 		try {
@@ -352,7 +377,10 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
 	}
 	packAll(teams: Team[]) {
 		return teams.map(team => (
-			(team.format ? `${team.format}]` : ``) + (team.folder ? `${team.folder}/` : ``) + team.name + `|` + team.packedTeam
+			(team.teamid ? `${team.teamid}[` : '') +
+			(team.format ? `${team.format}]` : ``) +
+			(team.folder ? `${team.folder}/` : ``) +
+			team.name + `|` + team.packedTeam
 		)).join('\n');
 	}
 	save() {
@@ -362,15 +390,21 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
 		this.update('team');
 	}
 	unpackLine(line: string): Team | null {
-		let pipeIndex = line.indexOf('|');
+		const pipeIndex = line.indexOf('|');
 		if (pipeIndex < 0) return null;
 		let bracketIndex = line.indexOf(']');
 		if (bracketIndex > pipeIndex) bracketIndex = -1;
+		let leftBracketIndex = line.indexOf('[');
+		if (leftBracketIndex < 0) leftBracketIndex = 0;
+		const isBox = line.slice(0, bracketIndex).endsWith('-box');
 		let slashIndex = line.lastIndexOf('/', pipeIndex);
 		if (slashIndex < 0) slashIndex = bracketIndex; // line.slice(slashIndex + 1, pipeIndex) will be ''
-		let format = bracketIndex > 0 ? line.slice(0, bracketIndex) : 'gen7';
+		let format = bracketIndex > 0 ? line.slice(
+			(leftBracketIndex ? leftBracketIndex + 1 : 0), isBox ? bracketIndex - 4 : bracketIndex
+		) : 'gen9';
 		if (!format.startsWith('gen')) format = 'gen6' + format;
 		const name = line.slice(slashIndex + 1, pipeIndex);
+		const teamid = leftBracketIndex > 0 ? Number(line.slice(0, leftBracketIndex)) : undefined;
 		return {
 			name,
 			format: format as ID,
@@ -378,7 +412,121 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
 			packedTeam: line.slice(pipeIndex + 1),
 			iconCache: null,
 			key: '',
+			teamid,
 		};
+	}
+	loadRemoteTeams() {
+		PSLoginServer.query('getteams').then(data => {
+			if (!data) return;
+			if (data.actionerror) {
+				return PS.alert('Error loading uploaded teams: ' + data.actionerror);
+			}
+			const teams: { [key: string]: UploadedTeam } = {};
+			for (const team of data.teams) {
+				teams[team.teamid] = team;
+			}
+
+			// find exact teamid matches
+			for (const localTeam of this.list) {
+				if (localTeam.teamid) {
+					const team = teams[localTeam.teamid];
+					if (!team) {
+						continue;
+					}
+					const compare = this.compareTeams(team, localTeam);
+					if (compare !== true) {
+						if (!localTeam.name.endsWith(' (local version)')) localTeam.name += ' (local version)';
+						continue;
+					}
+					localTeam.uploaded = {
+						teamid: team.teamid,
+						notLoaded: true,
+						private: team.private,
+					};
+					delete teams[localTeam.teamid];
+				}
+			}
+
+			// do best-guess matches for teams that don't have a local team with matching teamid
+			for (const team of Object.values(teams)) {
+				let matched = false;
+				for (const localTeam of this.list) {
+					if (localTeam.teamid) continue;
+
+					const compare = this.compareTeams(team, localTeam);
+					if (compare === 'rename') {
+						if (!localTeam.name.endsWith(' (local version)')) localTeam.name += ' (local version)';
+					} else if (compare) {
+						// prioritize locally saved teams over remote
+						// as so to not overwrite changes
+						matched = true;
+						localTeam.teamid = team.teamid;
+						localTeam.uploaded = {
+							teamid: team.teamid,
+							notLoaded: true,
+							private: team.private,
+						};
+						break;
+					}
+				}
+				if (!matched) {
+					const mons = team.team.split(',').map((m: string) => ({ species: m, moves: [] }));
+					const newTeam: Team = {
+						name: team.name,
+						format: team.format,
+						folder: '',
+						packedTeam: PSTeambuilder.packTeam(mons),
+						iconCache: null,
+						key: this.getKey(team.name),
+						uploaded: {
+							teamid: team.teamid,
+							notLoaded: true,
+							private: team.private,
+						},
+					};
+					this.push(newTeam);
+				}
+			}
+		});
+	}
+	loadTeam(team: Team | undefined | null, ifNeeded: true): void | Promise<void>;
+	loadTeam(team: Team | undefined | null): Promise<void>;
+	loadTeam(team: Team | undefined | null, ifNeeded?: boolean): void | Promise<void> {
+		if (!team) return ifNeeded ? undefined : Promise.resolve();
+		if (!team.uploaded?.notLoaded) return ifNeeded ? undefined : Promise.resolve();
+		if (team.uploaded.notLoaded !== true) return team.uploaded.notLoaded;
+
+		return (team.uploaded.notLoaded = PSLoginServer.query('getteam', {
+			teamid: team.uploaded.teamid,
+		}).then(data => {
+			if (!team.uploaded) return;
+			if (!data?.team) {
+				PS.alert(`Failed to load team: ${data?.actionerror || "Error unknown. Try again later."}`);
+				return;
+			}
+			team.uploaded.notLoaded = false;
+			team.packedTeam = data.team;
+			PS.teams.save();
+		}));
+	}
+	compareTeams(serverTeam: UploadedTeam, localTeam: Team) {
+		// TODO: decide if we want this
+		// if (serverTeam.teamid === localTeam.teamid && localTeam.teamid) return true;
+
+		// if titles match exactly and mons are the same, assume they're the same team
+		// if they don't match, it might be edited, but we'll go ahead and add it to the user's
+		// teambuilder since they may want that old version around. just go ahead and edit the name
+		let sanitize = (name: string) => (name || "").replace(/\s+\(server version\)/g, '').trim();
+		const nameMatches = sanitize(serverTeam.name) === sanitize(localTeam.name);
+		if (!(nameMatches && serverTeam.format === localTeam.format)) {
+			return false;
+		}
+		// if it's been edited since, invalidate the team id on this one (count it as new)
+		// and load from server
+		const mons = serverTeam.team.split(',').map(toID).sort().join(',');
+		const otherMons = PSTeambuilder.packedTeamSpecies(localTeam.packedTeam).map(toID).sort().join(',');
+		if (mons !== otherMons) return 'rename';
+		return true;
 	}
 }
 
@@ -705,11 +853,15 @@ interface PSNotificationState {
 }
 
 type ClientCommands<RoomT extends PSRoom> = {
-	[command: Lowercase<string>]: (this: RoomT, target: string, cmd: string) => string | boolean | null | void,
+	[command: Lowercase<string>]: (
+		this: RoomT, target: string, cmd: string, element: HTMLElement | null
+	) => string | boolean | null | void,
 };
 /** The command signature is a lie but TypeScript and string validation amirite? */
 type ParsedClientCommands = {
-	[command: `parsed${string}`]: (this: PSRoom, target: string, cmd: string) => string | boolean | null | void,
+	[command: `parsed${string}`]: (
+		this: PSRoom, target: string, cmd: string, element: HTMLElement | null
+	) => string | boolean | null | void,
 };
 
 function makeLoadTracker() {
@@ -826,6 +978,14 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 		PS.update();
 	}
 	autoDismissNotifications() {
+		let room = PS.rooms[this.id] as ChatRoom;
+		if (room.lastMessageTime) {
+			// Mark chat messages as read to avoid double-notifying on reload
+			let lastMessageDates = PS.prefs.logtimes || {};
+			if (!lastMessageDates[PS.server.id]) lastMessageDates[PS.server.id] = {};
+			lastMessageDates[PS.server.id][room.id] = room.lastMessageTime || 0;
+			PS.prefs.set('logtimes', lastMessageDates);
+		}
 		this.notifications = this.notifications.filter(notification => notification.noAutoDismiss);
 		this.isSubtleNotifying = false;
 	}
@@ -876,6 +1036,13 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 			this.receiveLine(BattleTextParser.parseLine(line));
 		}
 	}
+	errorReply(message: string, element = this.currentElement) {
+		if (element?.tagName === 'BUTTON') {
+			PS.alert(message, { parentElem: element });
+		} else {
+			this.add(`|error|${message}`);
+		}
+	}
 	parseClientCommands(commands: ClientCommands<this>) {
 		const parsedCommands: ParsedClientCommands = {};
 		for (const cmd in commands) {
@@ -889,19 +1056,34 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 		return parsedCommands;
 	}
 	globalClientCommands = this.parseClientCommands({
-		'j,join'(target) {
+		'j,join'(target, cmd, elem) {
 			const roomid = /[^a-z0-9-]/.test(target) ? toID(target) as any as RoomID : target as RoomID;
-			PS.join(roomid);
+			PS.join(roomid, { parentElem: elem });
 		},
-		'part,leave,close'(target) {
-			const roomid = /[^a-z0-9-]/.test(target) ? toID(target) as any as RoomID : target as RoomID;
-			PS.leave(roomid || this.id);
+		'part,leave,close'(target, cmd, elem) {
+			const roomid = (/[^a-z0-9-]/.test(target) ? toID(target) as any as RoomID : target as RoomID) || this.id;
+			const room = PS.rooms[roomid];
+			const battle = (room as BattleRoom)?.battle;
+
+			if (room?.type === "battle" && !battle.ended && battle.mySide.id === PS.user.userid) {
+				PS.join("forfeitbattle" as RoomID, { parentElem: elem });
+				return true;
+			}
+			if (room?.type === "chat" && room.connected && PS.prefs.leavePopupRoom) {
+				PS.join("confirmleaveroom" as RoomID, { parentElem: elem });
+				return true;
+			}
+
+			PS.leave(roomid);
 		},
 		'closeand'(target) {
 			// we actually do the close last, because a lot of things stop working
 			// after you delete the room
 			this.send(target);
 			PS.leave(this.id);
+		},
+		'receivepopup'(target) {
+			PS.alert(target);
 		},
 		'inopener,inparent'(target) {
 			// do this command in the popup opener
@@ -962,22 +1144,28 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 			}
 		},
 		'cancelsearch'() {
-			PS.mainmenu.cancelSearch();
+			if (PS.mainmenu.cancelSearch()) {
+				this.add(`||Search cancelled.`, true);
+			} else {
+				this.add(`|error|You're not currently searching.`, true);
+			}
 		},
-		'nick'(target) {
+		'nick'(target, cmd, element) {
+			const noNameChange = PS.user.userid === toID(target);
+			if (!noNameChange) PS.join('login' as RoomID, { parentElem: element });
 			if (target) {
 				PS.user.changeName(target);
-			} else {
-				PS.join('login' as RoomID);
 			}
 		},
 		'avatar'(target) {
-			const avatar = window.BattleAvatarNumbers?.[toID(target)] || toID(target);
+			target = target.toLowerCase();
+			if (/[^a-z0-9-]/.test(target)) target = toID(target);
+			const avatar = window.BattleAvatarNumbers?.[target] || target;
 			PS.user.avatar = avatar;
 			if (this.type !== 'chat' && this.type !== 'battle') {
 				PS.send(`|/avatar ${avatar}`);
 			} else {
-				this.send(`/avatar ${avatar}`);
+				this.sendDirect(`/avatar ${avatar}`);
 			}
 		},
 		'open,user'(target) {
@@ -1158,7 +1346,103 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 			}
 			this.add("||All PM windows cleared and closed.");
 		},
-		'help'(target) {
+		'unpackhidden'() {
+			PS.prefs.set('nounlink', true);
+			this.add('||Locked/banned users\' chat messages: ON');
+		},
+		'packhidden'() {
+			PS.prefs.set('nounlink', false);
+			this.add('||Locked/banned users\' chat messages: HIDDEN');
+		},
+		'hl,highlight'(target) {
+			let highlights = PS.prefs.highlights || {};
+			if (target.includes(' ')) {
+				let targets = target.split(' ');
+				let subCmd = targets[0];
+				targets = targets.slice(1).join(' ').match(/([^,]+?({\d*,\d*})?)+/g) as string[];
+				// trim the targets to be safe
+				for (let i = 0, len = targets.length; i < len; i++) {
+					targets[i] = targets[i].replace(/\n/g, '').trim();
+				}
+				switch (subCmd) {
+				case 'add': case 'roomadd': {
+					let key = subCmd === 'roomadd' ? (PS.server.id + '#' + this.id) : 'global';
+					let highlightList = highlights[key] || [];
+					for (let i = 0, len = targets.length; i < len; i++) {
+						if (!targets[i]) continue;
+						if (/[\\^$*+?()|{}[\]]/.test(targets[i])) {
+							// Catch any errors thrown by newly added regular expressions so they don't break the entire highlight list
+							try {
+								new RegExp(targets[i]);
+							} catch (e: any) {
+								return this.add(`|error|${(e.message.substr(0, 28) === 'Invalid regular expression: ' ? e.message : 'Invalid regular expression: /' + targets[i] + '/: ' + e.message)}`);
+							}
+						}
+						if (highlightList.includes(targets[i])) {
+							return this.add(`|error|${targets[i]} is already on your highlights list.`);
+						}
+					}
+					highlights[key] = highlightList.concat(targets);
+					this.add(`||Now highlighting on ${(key === 'global' ? "(everywhere): " : "(in " + key + "): ")} ${highlights[key].join(', ')}`);
+					// We update the regex
+					ChatRoom.updateHighlightRegExp(highlights);
+					break;
+				}
+				case 'delete': case 'roomdelete': {
+					let key = subCmd === 'roomdelete' ? (PS.server.id + '#' + this.id) : 'global';
+					let highlightList = highlights[key] || [];
+					let newHls: string[] = [];
+					for (let i = 0, len = highlightList.length; i < len; i++) {
+						if (!targets.includes(highlightList[i])) {
+							newHls.push(highlightList[i]);
+						}
+					}
+					highlights[key] = newHls;
+					this.add(`||Now highlighting on ${(key === 'global' ? "(everywhere): " : "(in " + key + "): ")} ${highlights[key].join(', ')}`);
+					// We update the regex
+					ChatRoom.updateHighlightRegExp(highlights);
+					break;
+				}
+				default:
+					// Wrong command
+					this.add('|error|Invalid /highlight command.');
+					this.handleSend('/help highlight'); // show help
+					return false;
+				}
+				PS.prefs.set('highlights', highlights);
+			} else {
+				if (['clear', 'roomclear', 'clearall'].includes(target)) {
+					let key = (target === 'roomclear' ? (PS.server.id + '#' + this.id) : (target === 'clearall' ? '' : 'global'));
+					if (key) {
+						highlights[key] = [];
+						this.add(`||All highlights (${(key === 'global' ? "everywhere" : "in " + key)}) cleared.`);
+						ChatRoom.updateHighlightRegExp(highlights);
+					} else {
+						PS.prefs.set('highlights', null);
+						this.add("||All highlights (in all rooms and globally) cleared.");
+						ChatRoom.updateHighlightRegExp({});
+					}
+				} else if (['show', 'list', 'roomshow', 'roomlist'].includes(target)) {
+					// Shows a list of the current highlighting words
+					let key = target.startsWith('room') ? (PS.server.id + '#' + this.id) : 'global';
+					if (highlights[key] && highlights[key].length > 0) {
+						this.add(`||Current highlight list ${(key === 'global' ? "(everywhere): " : "(in " + key + "): ")}${highlights[key].join(", ")}`);
+					} else {
+						this.add(`||Your highlight list${(key === 'global' ? '' : ' in ' + key)} is empty.`);
+					}
+				} else {
+					// Wrong command
+					this.add('|error|Invalid /highlight command.');
+					this.handleSend('/help highlight'); // show help
+					return false;
+				}
+			}
+			return false;
+		},
+		'senddirect'(target) {
+			this.sendDirect(target);
+		},
+		'h,help'(target) {
 			switch (toID(target)) {
 			case 'chal':
 			case 'chall':
@@ -1262,11 +1546,12 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 		},
 	});
 	clientCommands: ParsedClientCommands | null = null;
+	currentElement: HTMLElement | null = null;
 	/**
 	 * Handles outgoing messages, like `/logout`. Return `true` to prevent
 	 * the line from being sent to servers.
 	 */
-	handleSend(line: string) {
+	handleSend(line: string, element = this.currentElement) {
 		if (!line.startsWith('/') || line.startsWith('//')) return line;
 		const spaceIndex = line.indexOf(' ');
 		const cmd = (spaceIndex >= 0 ? line.slice(1, spaceIndex) : line.slice(1)) as 'parsed';
@@ -1275,13 +1560,16 @@ export class PSRoom extends PSStreamModel<Args | null> implements RoomOptions {
 		const cmdHandler = this.globalClientCommands[cmd] || this.clientCommands?.[cmd];
 		if (!cmdHandler) return line;
 
-		const cmdResult = cmdHandler.call(this, target, cmd);
+		const previousElement = this.currentElement;
+		this.currentElement = element;
+		const cmdResult = cmdHandler.call(this, target, cmd, element);
+		this.currentElement = previousElement;
 		if (cmdResult === true) return line;
 		return cmdResult || null;
 	}
-	send(msg: string | null) {
+	send(msg: string | null, element?: HTMLElement) {
 		if (!msg) return;
-		msg = this.handleSend(msg);
+		msg = this.handleSend(msg, element);
 		if (!msg) return;
 		this.sendDirect(msg);
 	}
@@ -1921,9 +2209,10 @@ export const PS = new class extends PSModel {
 		}
 		return this.focusRoom(rooms[index + 1]);
 	}
-	alert(message: string, opts: { okButton?: string } = {}) {
+	alert(message: string, opts: { okButton?: string, parentElem?: HTMLElement } = {}) {
 		this.join(`popup-${this.popups.length}` as RoomID, {
-			args: { message, ...opts },
+			args: { message, ...opts, parentElem: null },
+			parentElem: opts.parentElem,
 		});
 	}
 	confirm(message: string, opts: { okButton?: string, cancelButton?: string } = {}) {
@@ -2166,7 +2455,8 @@ export const PS = new class extends PSModel {
 
 		if (this.popups.length && room.id === this.popups[this.popups.length - 1]) {
 			this.popups.pop();
-			PS.room = this.popups.length ? PS.rooms[this.popups[this.popups.length - 1]]! : PS.panel;
+			PS.room = this.popups.length ? PS.rooms[this.popups[this.popups.length - 1]]! :
+				PS.rooms[room.parentRoomid ?? PS.panel.id] || PS.panel;
 		}
 
 		if (wasFocused) {
