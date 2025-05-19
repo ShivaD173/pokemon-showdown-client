@@ -15,7 +15,8 @@
 
 import type { Battle } from './battle';
 import type { BattleScene } from './battle-animations';
-import { Dex, Teams, toID, toRoomid, toUserid, type ID } from './battle-dex';
+import { Dex, toID, toRoomid, toUserid, type ID } from './battle-dex';
+import { Teams } from './battle-teams';
 import { BattleTextParser, type Args, type KWArgs } from './battle-text-parser';
 import { Net } from './client-connection'; // optional
 
@@ -141,7 +142,7 @@ export class BattleLog {
 		let divClass = 'chat';
 		let divHTML = '';
 		let noNotify: boolean | undefined;
-		if (!['join', 'j', 'leave', 'l'].includes(args[0])) this.joinLeave = null;
+		if (!['join', 'j', 'leave', 'l', 'turn'].includes(args[0])) this.joinLeave = null;
 		if (!['name', 'n'].includes(args[0])) this.lastRename = null;
 		switch (args[0]) {
 		case 'chat': case 'c': case 'c:':
@@ -266,7 +267,7 @@ export class BattleLog {
 
 		case 'unlink': {
 			// |unlink| is deprecated in favor of |hidelines|
-			if (window.PS.prefs.nounlink) return;
+			if (window.PS?.prefs?.nounlink || window.Dex?.prefs?.nounlink) return;
 			const user = toID(args[2]) || toID(args[1]);
 			this.unlinkChatFrom(user);
 			if (args[2]) {
@@ -277,7 +278,7 @@ export class BattleLog {
 		}
 
 		case 'hidelines': {
-			if (window.PS.prefs.nounlink) return;
+			if (window.PS?.prefs?.nounlink || window.Dex?.prefs?.nounlink) return;
 			const user = toID(args[2]);
 			this.unlinkChatFrom(user);
 			if (args[1] !== 'unlink') {
@@ -306,7 +307,7 @@ export class BattleLog {
 			if (!team.length) return;
 			const side = battle.getSide(args[1]);
 			const exportedTeam = team.map(set => {
-				let buf = Teams.export([set], battle.gen).replace(/\n/g, '<br />');
+				let buf = Teams.export([set], battle.dex).replace(/\n/g, '<br />');
 				if (set.name && set.name !== set.species) {
 					buf = buf.replace(set.name, BattleLog.sanitizeHTML(
 						`<span class="picon" style="${Dex.getPokemonIcon(set.species)}"></span><br />${set.name}`));

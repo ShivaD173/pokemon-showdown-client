@@ -106,6 +106,8 @@ export class PSRouter {
 			document.title = newTitle;
 		});
 		window.addEventListener('hashchange', e => {
+			// really dumb hack, but it's not like back/forward has ever been very reliable
+			if (PS.popups.length && PS.rooms[PS.popups[PS.popups.length - 1]]?.noURL) return;
 			const possibleRoomid = location.hash.slice(1);
 			let currentRoomid: RoomID | null = null;
 			if (/^[a-z0-9-]*$/.test(possibleRoomid)) {
@@ -121,7 +123,9 @@ export class PSRouter {
 	subscribeHistory() {
 		const currentRoomid = location.pathname.slice(1);
 		if (/^[a-z0-9-]+$/.test(currentRoomid)) {
-			PS.join(currentRoomid as RoomID);
+			if (currentRoomid !== 'preactalpha' && currentRoomid !== 'preactbeta') {
+				PS.join(currentRoomid as RoomID);
+			}
 		}
 		if (!window.history) return;
 		{
@@ -296,6 +300,7 @@ export class PSView extends preact.Component {
 	static readonly isFirefox = navigator.userAgent.includes(' Firefox/');
 	static readonly isMac = navigator.platform?.startsWith('Mac');
 	static textboxFocused = false;
+	static dragend: ((ev: DragEvent) => void) | null = null;
 	static setTextboxFocused(focused: boolean) {
 		if (!PSView.isChrome || PS.leftPanelWidth !== null) return;
 		// Chrome bug: on Android, it insistently scrolls everything leftmost when scroll snap is enabled
@@ -544,6 +549,11 @@ export class PSView extends preact.Component {
 				ev.preventDefault();
 				PS.join('dm---' as RoomID);
 			}
+		});
+
+		window.addEventListener('dragend', ev => {
+			PS.dragging = null;
+			ev.preventDefault();
 		});
 
 		const colorSchemeQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
