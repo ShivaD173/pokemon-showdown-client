@@ -269,25 +269,6 @@ export const Dex = new class implements ModdedDex {
 		if (!gen) return this;
 		return this.mod(`gen${gen}` as ID, format);
 	}
-	forFormat(format: string) {
-		if (format.includes('letsgo')) {
-			return this.mod('gen7letsgo' as ID, format);
-		}
-		if (format.includes('bdsp')) {
-			return this.mod('gen8bdsp' as ID, format);
-		}
-		if (format.includes('vgcpride')) {
-			return this.mod('gen9vgcgay' as ID, format);
-		}
-		if (format.includes('tiershift')) {
-			return this.mod(format.slice(0, 4) as ID, format);
-		}
-		if (format.startsWith('gen')) {
-			const gen = (Number(format.charAt(3)) || 6);
-			return this.forGen(gen, format);
-		}
-		return this;
-	}
 	formatGen(format: string) {
 		const formatid = toID(format);
 		if (!formatid) return Dex.gen;
@@ -303,6 +284,12 @@ export const Dex = new class implements ModdedDex {
 		}
 		if (dex.gen === 8 && formatid.includes('bdsp')) {
 			dex = Dex.mod('gen8bdsp' as ID);
+		}
+		if (format.includes('vgcpride')) {
+			return this.mod('gen9vgcgay' as ID, format);
+		}
+		if (format.includes('tiershift')) {
+			return this.mod(format.slice(0, 4) as ID, format);
 		}
 		return dex;
 	}
