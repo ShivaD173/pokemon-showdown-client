@@ -32,7 +32,7 @@ export class UserRoom extends PSRoom {
 		this.isSelf = (this.userid === PS.user.userid);
 		if (/[a-zA-Z0-9]/.test(this.name.charAt(0))) this.name = ' ' + this.name;
 		this.update(null);
-		if (this.userid) PS.send(`|/cmd userdetails ${this.userid}`);
+		if (this.userid) PS.send(`/cmd userdetails ${this.userid}`);
 	}
 }
 
@@ -621,13 +621,11 @@ class OptionsPanel extends PSRoomPanel {
 		}
 		case 'language': {
 			PS.prefs.set(setting, elem.value);
-			PS.send('/language ' + elem.value);
+			PS.send(`/language ${elem.value}`);
 			break;
 		}
 		case 'tournaments': {
-			if (elem.value === "hide") PS.prefs.set(setting, elem.value);
-			if (elem.value === "notify") PS.prefs.set(setting, elem.value);
-			if (!elem.value) PS.prefs.set(setting, null);
+			PS.prefs.set(setting, !elem.value ? null : elem.value as 'hide' | 'notify');
 			break;
 		}
 		case 'refreshprompt':
@@ -643,7 +641,7 @@ class OptionsPanel extends PSRoomPanel {
 
 	editStatus = (ev: Event) => {
 		const statusInput = this.base!.querySelector<HTMLInputElement>('input[name=statustext]');
-		PS.send(statusInput?.value?.length ? `|/status ${statusInput.value}` : `|/clearstatus`);
+		PS.send(statusInput?.value?.length ? `/status ${statusInput.value}` : `/clearstatus`);
 		this.setState({ showStatusUpdated: true, showStatusInput: false });
 		ev.preventDefault();
 		ev.stopImmediatePropagation();
@@ -771,8 +769,8 @@ class OptionsPanel extends PSRoomPanel {
 			<p>
 				<label class="optlabel">
 					Tournaments: <select name="tournaments" class="button" onChange={this.handleOnChange}>
-						<option value="" selected={!PS.prefs.tournaments}>No notifications</option>
-						<option value="notify" selected={PS.prefs.tournaments === "notify"}>Notifications</option>
+						<option value="" selected={!PS.prefs.tournaments}>Notify when joined</option>
+						<option value="notify" selected={PS.prefs.tournaments === "notify"}>Always notify</option>
 						<option value="hide" selected={PS.prefs.tournaments === "hide"}>Hide</option>
 					</select>
 				</label>
@@ -1423,15 +1421,16 @@ class LeaveRoomPanel extends PSRoomPanel {
 
 	override render() {
 		const room = this.props.room;
-		const parentRoomId = (this.props.room.parentElem as HTMLInputElement).value;
+		const parentRoomid = room.parentRoomid!;
+
 		return <PSPanelWrapper room={room} width={480}><div class="pad">
-			<p>Are you sure you want to exit this room?</p>
+			<p>Close <code>{parentRoomid || "ERROR"}</code>?</p>
 			<p class="buttonbar">
-				<button data-cmd={`/closeand /close ${parentRoomId}`} class="button autofocus">
+				<button data-cmd={`/closeand /close ${parentRoomid}`} class="button autofocus">
 					<strong>Close Room</strong>
 				</button> {}
 				<button data-cmd="/close" class="button">
-					<strong>Cancel</strong>
+					Cancel
 				</button>
 			</p>
 		</div></PSPanelWrapper>;
@@ -1690,22 +1689,24 @@ class PopupPanel extends PSRoomPanel<PopupRoom> {
 		const value = room.args?.value as string | undefined;
 		const type = (room.args?.type || (typeof value === 'string' ? 'text' : null)) as string | null;
 		const message = room.args?.message;
-		return <PSPanelWrapper room={room} width={480}><form class="pad" onSubmit={this.handleSubmit}>
-			{message && <p
-				style="white-space:pre-wrap;word-wrap:break-word"
-				dangerouslySetInnerHTML={{ __html: this.parseMessage(message as string || '') }}
-			></p>}
-			{!!type && <p><input name="value" type={type} class="textbox autofocus" style="width:100%;box-sizing:border-box" /></p>}
-			<p class="buttonbar">
-				<button class={`button${!type ? ' autofocus' : ''}`} type="submit" style="min-width:50px">
-					<strong>{okButton}</strong>
-				</button> {}
-				{otherButtons} {}
-				{!!cancelButton && <button class="button" data-cmd="/close" type="button">
-					{cancelButton}
-				</button>}
-			</p>
-		</form></PSPanelWrapper>;
+		return <PSPanelWrapper room={room} width={room.args?.width as number || 480}>
+			<form class="pad" onSubmit={this.handleSubmit}>
+				{message && <p
+					style="white-space:pre-wrap;word-wrap:break-word"
+					dangerouslySetInnerHTML={{ __html: this.parseMessage(message as string || '') }}
+				></p>}
+				{!!type && <p><input name="value" type={type} class="textbox autofocus" style="width:100%;box-sizing:border-box" /></p>}
+				<p class="buttonbar">
+					<button class={`button${!type ? ' autofocus' : ''}`} type="submit" style="min-width:50px">
+						<strong>{okButton}</strong>
+					</button> {}
+					{otherButtons} {}
+					{!!cancelButton && <button class="button" data-cmd="/close" type="button">
+						{cancelButton}
+					</button>}
+				</p>
+			</form>
+		</PSPanelWrapper>;
 	}
 }
 
