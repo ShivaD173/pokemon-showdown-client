@@ -143,7 +143,6 @@ export class BattleLog {
 		let divClass = 'chat';
 		let divHTML = '';
 		let noNotify: boolean | undefined;
-		if (!['join', 'j', 'leave', 'l'].includes(args[0])) this.joinLeave = null;
 		if (!['name', 'n'].includes(args[0])) this.lastRename = null;
 		switch (args[0]) {
 		case 'chat': case 'c': case 'c:':
@@ -183,16 +182,7 @@ export class BattleLog {
 			[divClass, divHTML, noNotify] = this.parseChatMessage(message, name, timestampHtml, isHighlighted);
 			if (!noNotify && isHighlighted) {
 				const notifyTitle = "Mentioned by " + name + " in " + (battle?.roomid || '');
-				if (window.PS) {
-					const room = window.PS.rooms[battle?.roomid || ''];
-					room.notify({
-						title: notifyTitle,
-						body: `"${message}"`,
-						id: 'highlight',
-					});
-				} else {
-					window.app?.rooms[battle?.roomid || '']?.notifyOnce(notifyTitle, "\"" + message + "\"", 'highlight');
-				}
+				window.app?.rooms[battle?.roomid || '']?.notifyOnce(notifyTitle, "\"" + message + "\"", 'highlight');
 			}
 			break;
 
@@ -341,9 +331,13 @@ export class BattleLog {
 
 		default:
 			this.addBattleMessage(args, kwArgs);
+			this.joinLeave = null;
 			return;
 		}
-		if (divHTML) this.addDiv(divClass, divHTML, preempt);
+		if (divHTML) {
+			this.addDiv(divClass, divHTML, preempt);
+			this.joinLeave = null;
+		}
 	}
 	addBattleMessage(args: Args, kwArgs?: KWArgs) {
 		switch (args[0]) {
@@ -1238,9 +1232,9 @@ export class BattleLog {
 		}
 		const colorStyle = ` style="color:${BattleLog.usernameColor(toID(name))}"`;
 		const clickableName = `<small class="groupsymbol">${BattleLog.escapeHTML(group)}</small><span class="username">${BattleLog.escapeHTML(name)}</span>`;
-		let hlClass = isHighlighted ? ' highlighted' : '';
-		let isMine = (window.app?.user?.get('name') === name) || (window.PS?.user.name === name);
-		let mineClass = isMine ? ' mine' : '';
+		const isMine = (window.app?.user?.get('name') === name) || (window.PS?.user.name === name);
+		const hlClass = isHighlighted ? ' highlighted' : '';
+		const mineClass = isMine ? ' mine' : '';
 
 		let cmd = '';
 		let target = '';
