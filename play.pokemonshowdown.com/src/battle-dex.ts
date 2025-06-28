@@ -1252,8 +1252,11 @@ export class ModdedDex {
 			let usage = -1;
 			if (this.statsData) {
 				usage = 0;
-				if (data.name in this.statsData.data) {
-					usage = this.statsData.data[data.name].usage;
+				let pokemonName = data.name.replace("\u2019", "'")
+				if (pokemonName in this.statsData.data) {
+					usage = this.statsData.data[pokemonName].usage;
+				} else if (data.baseSpecies in this.statsData.data && data.baseSpecies !== "Silvally") {
+					usage = this.statsData.data[data.baseSpecies].usage;
 				}
 			}
 			const species = new Species(id, name, data, usage);
