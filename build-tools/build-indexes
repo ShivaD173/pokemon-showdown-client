@@ -587,7 +587,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isDoubles && genNum > 4 && !isGay) {
 				return ["DUber", "(DUber)", "DOU", "DBL", "(DOU)", "DUU", "(DUU)", "New", "NFE", "LC"];
 			}
-			return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "(Uber)", "OU", "(OU)", "UUBL", "UU", "RUBL", "RU",
+			return ["CAP", "CAP NFE", "CAP LC", "AG", "Uber", "(Uber)", "OU", "(OU)", "UUBL", "UU", "RUBL", "RU", "(RU)",
 				"NUBL", "NU", "PUBL", "PU", "ZUBL", "ZU", "SUBL", "SU", "IUBL", "IU", "6UBL", "6U", "7UBL", "7U",
 				"8UBL", "8U", "9UBL", "9U", "10UBL", "10U", "UR", "New", "NFE", "LC", "Unreleased", "11UBL", "11U"];
 		})();
