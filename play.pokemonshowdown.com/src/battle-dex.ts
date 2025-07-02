@@ -991,7 +991,7 @@ interface ChaosPokemon {
 }
 
 async function fetchStatsData(format: string): Promise<ChaosResponse> {
-	const url = 'https://staraptorshowdown.com/Stats/2025_3_2025_5/chaos/' + format + '-0.json';
+	const url = 'https://staraptorshowdown.com/Stats/2025_4_2025_6/chaos/' + format + '-0.json';
 	// const url = 'http://localhost:8001/Stats/2024-04/chaos/' + format + '-0.json';
 	return fetch(url).then(res => res.json());
 }
@@ -1252,7 +1252,7 @@ export class ModdedDex {
 			let usage = -1;
 			if (this.statsData) {
 				usage = 0;
-				let pokemonName = data.name.replace("\u2019", "'")
+				let pokemonName = data.name.replace("\u2019", "'");
 				if (pokemonName in this.statsData.data) {
 					usage = this.statsData.data[pokemonName].usage;
 				} else if (data.baseSpecies in this.statsData.data && data.baseSpecies !== "Silvally") {
