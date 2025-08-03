@@ -278,20 +278,20 @@ export const Dex = new class implements ModdedDex {
 		return parseInt(formatid.charAt(3)) || Dex.gen;
 	}
 	forFormat(format: string) {
-		let dex = Dex.forGen(Dex.formatGen(format), format);
+		let dex = Dex.forGen(Dex.formatGen(format));
 
 		const formatid = toID(format).slice(4);
 		if (dex.gen === 7 && formatid.includes('letsgo')) {
 			dex = Dex.mod('gen7letsgo' as ID);
-		}
-		if (dex.gen === 8 && formatid.includes('bdsp')) {
+		} else if (dex.gen === 8 && formatid.includes('bdsp')) {
 			dex = Dex.mod('gen8bdsp' as ID);
-		}
-		if (format.includes('vgcpride')) {
+		} else if (format.includes('vgcpride')) {
 			return this.mod('gen9vgcgay' as ID, format);
-		}
-		if (format.includes('tiershift')) {
+		} else if (format.includes('tiershift')) {
 			return this.mod(format.slice(0, 4) as ID, format);
+		} else {
+			// Hack until I do this the right way in tiers
+			dex = Dex.forGen(Dex.formatGen(format), format);
 		}
 		return dex;
 	}
