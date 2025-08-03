@@ -278,7 +278,7 @@ export const Dex = new class implements ModdedDex {
 		return parseInt(formatid.charAt(3)) || Dex.gen;
 	}
 	forFormat(format: string) {
-		let dex = Dex.forGen(Dex.formatGen(format));
+		let dex = Dex.forGen(Dex.formatGen(format), format);
 
 		const formatid = toID(format).slice(4);
 		if (dex.gen === 7 && formatid.includes('letsgo')) {
@@ -993,8 +993,7 @@ interface ChaosPokemon {
 
 async function fetchStatsData(format: string): Promise<ChaosResponse> {
 	const url = 'https://staraptorshowdown.com/Stats/2025_5_2025_7/chaos/' + format + '-0.json';
-	// const url = 'http://localhost:8001/Stats/2024-04/chaos/' + format + '-0.json';
-	return fetch(url).then(res => res.json());
+	return self.fetch(url).then(res => res.json());
 }
 
 export class ModdedDex {
