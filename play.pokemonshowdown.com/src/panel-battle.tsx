@@ -98,8 +98,10 @@ class BattlesPanel extends PSRoomPanel<BattlesRoom> {
 						<i class="fa fa-refresh" aria-hidden></i> Refresh
 					</button> {}
 					<span
-						style={Dex.getPokemonIcon('meloetta-pirouette') + ';display:inline-block;vertical-align:middle'} class="picon"
-						title="Meloetta is PS's mascot! The Pirouette forme is Fighting-type, and represents our battles."
+						// style={Dex.getPokemonIcon('meloetta-pirouette') + ';display:inline-block;vertical-align:middle'} class="picon"
+						// title="Meloetta is PS's mascot! The Pirouette forme is Fighting-type, and represents our battles."
+						style={Dex.getPokemonIcon('malamar') + ';display:inline-block;vertical-align:middle'} class="picon"
+						title="Malamar is PS's mascot! Its favorite move, Superpower, is Fighting-type, and represents our battles."
 					></span>
 				</p>
 
@@ -824,7 +826,7 @@ class BattlePanel extends PSRoomPanel<BattleRoom> {
 				if (choice.tera) buf.push(`Terastallize (`, <strong>{active?.canTerastallize || '???'}</strong>, `) and `);
 				if (choice.max && active?.canDynamax) buf.push(active?.gigantamax ? `Gigantamax and ` : `Dynamax and `);
 				buf.push(`use `, <strong>{choices.currentMove(choice, i)?.name}</strong>);
-				if (choice.targetLoc > 0) {
+				if (choice.targetLoc > 0 || battle.gameType === 'freeforall') {
 					const target = battle.farSide.active[choice.targetLoc - 1];
 					if (!target) {
 						buf.push(` at slot ${choice.targetLoc}`);
