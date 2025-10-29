@@ -285,6 +285,8 @@ export const Dex = new class implements ModdedDex {
 			dex = Dex.mod('gen7letsgo' as ID);
 		} else if (dex.gen === 8 && formatid.includes('bdsp')) {
 			dex = Dex.mod('gen8bdsp' as ID);
+		} else if (format.includes('legends')) {
+			return this.mod('gen9legendsou' as ID, format);
 		} else if (format.includes('vgcpride')) {
 			return this.mod('gen9vgcgay' as ID, format);
 		} else if (format.includes('tiershift')) {
