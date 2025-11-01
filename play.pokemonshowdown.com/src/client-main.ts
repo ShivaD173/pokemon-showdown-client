@@ -2378,7 +2378,7 @@ export const PS = new class extends PSModel {
 		}
 		return this.focusRoom(rooms[index + 1]);
 	}
-	alert(message: string, opts: { okButton?: string, parentElem?: HTMLElement, width?: number } = {}) {
+	alert(message: string, opts: { okButton?: string, parentElem?: HTMLElement | null, width?: number } = {}) {
 		this.join(`popup-${this.popups.length}` as RoomID, {
 			args: { message, ...opts, parentElem: null },
 			parentElem: opts.parentElem,
@@ -2433,7 +2433,7 @@ export const PS = new class extends PSModel {
 		if (options.id.startsWith('challenge-')) {
 			this.requestNotifications();
 			options.id = `dm-${options.id.slice(10)}` as RoomID;
-			options.args = { challengeMenuOpen: true };
+			options.args = { challengeMenuOpen: true, ...options.args };
 		}
 		if (options.id.startsWith('dm-')) {
 			this.requestNotifications();
@@ -2453,6 +2453,12 @@ export const PS = new class extends PSModel {
 			preexistingRoom = this.rooms[options.id];
 		}
 		if (preexistingRoom) {
+			if (options.args?.format) {
+				preexistingRoom.args = options.args;
+				if ((preexistingRoom as ChatRoom).challengeMenuOpen) {
+					options.args.format = `!!${options.args.format as string}`;
+				}
+			}
 			if (options.autofocus) {
 				if (options.args?.challengeMenuOpen) {
 					(preexistingRoom as ChatRoom).openChallenge();
