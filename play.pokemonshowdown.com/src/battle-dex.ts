@@ -1003,7 +1003,7 @@ interface ChaosPokemon {
 }
 
 async function fetchStatsData(format: string): Promise<ChaosResponse> {
-	const url = 'https://staraptorshowdown.com/Stats/2025_12_2026_2/chaos/' + format + '-0.json';
+	const url = 'https://staraptorshowdown.com/Stats/2026_01_2026_03/chaos/' + format + '-0.json';
 	return self.fetch(url).then(res => res.json());
 }
 
