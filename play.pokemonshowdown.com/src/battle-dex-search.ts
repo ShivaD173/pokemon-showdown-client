@@ -651,7 +651,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.formatType = 'champions';
 			this.dex = Dex.mod('champions' as ID);
 			format = format.slice(9) as ID;
-			if (format !== 'ou') format = 'ubers' as ID;
+			if (format !== 'ou' && format !== 'su') format = 'ubers' as ID;
 		}
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
@@ -1036,6 +1036,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		const dex = this.dex;
 
 		let table = BattleTeambuilderTable;
+		console.log(this.formatType);
+		console.log(format);
 		if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table[`gen${dex.gen}`];
 		} else if (format.startsWith("metronomeffa")) {
