@@ -650,7 +650,8 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (format.includes('champions')) {
 			this.formatType = 'champions';
 			this.dex = Dex.mod('champions' as ID);
-			format = 'ou' as ID;
+			format = format.slice(9) as ID;
+			if (format !== 'ou') format = 'ubers' as ID;
 		}
 		if (format.startsWith('vgc')) {
 			this.formatType = 'doubles';
@@ -682,6 +683,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (format.includes('frlg')) {
 			this.formatType = 'frlg';
 			this.dex = Dex.mod('gen3frlg' as ID);
+			format = format.slice(4) as ID;
 		}
 		if (format === 'partnersincrime') this.formatType = 'doubles';
 		if (format.startsWith('ffa') || format === 'freeforall') this.formatType = 'doubles';
@@ -1042,7 +1044,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 			table = table['gen9vgcgay'];
 		} else if (this.formatType === 'champions') {
 			table = table[`champions`];
-		} else if (isVGCOrBS && !this.formatType) {
+		} else if (isVGCOrBS) {
 			table = table[`gen${dex.gen}vgc`];
 		} else if (dex.gen === 9 && isHackmons && !this.formatType) {
 			table = table['bh'];
@@ -1166,10 +1168,10 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		else if (format === '9u') tierSet = tierSet.slice(slices["9U"]);
 		else if (format.startsWith('10u')) tierSet = tierSet.slice(slices["10U"]);
 		else if (format === 'lol') tierSet = tierSet.slice(slices["11U"]);
-		else if (format === 'lc' || format === 'lcuu' || format.startsWith('lc') ||
-			(format !== 'caplc' && format.endsWith('lc'))) {
-			tierSet = tierSet.slice(slices.LC);
-		} else if (format === 'cap' || format.endsWith('cap')) {
+		else if (
+			format === 'lc' || format === 'lcuu' || format.startsWith('lc') || (format !== 'caplc' && format.endsWith('lc'))
+		) tierSet = tierSet.slice(slices.LC);
+		else if (format === 'cap' || format.endsWith('cap')) {
 			tierSet = tierSet.slice(0, slices.AG || slices.Uber).concat(tierSet.slice(slices.OU));
 		} else if (format === 'caplc') {
 			tierSet = tierSet.slice(slices['CAP LC'], slices.AG || slices.Uber).concat(tierSet.slice(slices.LC));
@@ -1254,18 +1256,6 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 					return true;
 				});
 			}
-		}
-		if (format === 'zu' && dex.gen === 5 && table.gen5zuBans) {
-			tierSet = tierSet.filter(([type, id]) => {
-				if (id in table.gen5zuBans) return false;
-				return true;
-			});
-		}
-		if (format === 'pu' && dex.gen === 4 && table.gen4puBans) {
-			tierSet = tierSet.filter(([type, id]) => {
-				if (id in table.gen4puBans) return false;
-				return true;
-			});
 		}
 
 		// Filter out Gmax Pokemon from standard tier selection
