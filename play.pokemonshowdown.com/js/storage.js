@@ -1455,7 +1455,7 @@ Storage.exportTeam = function (team, hidestats) {
 				var hpType = false;
 				for (var j = 0; j < curSet.moves.length; j++) {
 					var move = curSet.moves[j];
-					if (move.substr(0, 13) === 'Hidden Power ' && move.substr(0, 14) !== 'Hidden Power [' && gen < 9) {
+					if (move.substr(0, 13) === 'Hidden Power ' && move.substr(0, 14) !== 'Hidden Power [') {
 						hpType = move.substr(13);
 						if (!Dex.types.isName(hpType)) {
 							alert(move + " is not a valid Hidden Power type.");
