@@ -147,10 +147,14 @@ export class BattleRoom extends ChatRoom {
 	request: BattleRequest | null = null;
 	choices: BattleChoiceBuilder | null = null;
 	autoTimerActivated: boolean | null = null;
+	/** should be false if we joined right after accepting or challenging a battle,
+	  * and true if we refreshed and rejoined a battle.
+		* null = initializing, we don't know yet */
+	rejoining: boolean | null = null;
 
 	loadReplay() {
 		const replayid = this.id.slice(7);
-		Net(`https://replay.pokemonshowdown.com/${replayid}.json`).get().catch().then(data => {
+		Net(`https://replay.pokemonshowdown.com/${replayid}.json`).get().catch(() => '').then(data => {
 			try {
 				const replay = JSON.parse(data);
 				this.title = `[${replay.format}] ${replay.players.join(' vs. ')}`;
@@ -161,7 +165,10 @@ export class BattleRoom extends ChatRoom {
 				this.connected = 'client-only';
 				this.update(null);
 			} catch {
-				this.receiveLine(['error', 'Battle not found']);
+				this.receiveLine(['bigerror', `Battle "${replayid}" not found`]);
+				this.receiveLine(['html',
+					`<div class="broadcast-red pad"><p class="buttonbar"><button class="button" data-cmd="/close"><strong>Close</strong></button></p></div>`,
+				]);
 			}
 		});
 	}
@@ -360,7 +367,7 @@ class BattlePanel extends PSRoomPanel<BattleRoom> {
 		scene.tooltips.listen($elem.find('.battle-controls-container'));
 		scene.tooltips.listen(scene.log.elem);
 		super.componentDidMount();
-		battle.seekTurn(Infinity);
+		if (!PS.prefs.spectatefromstart) battle.seekTurn(Infinity);
 		if (PS.prefs.autohardcore) {
 			battle.setHardcoreMode(true);
 		}
@@ -380,11 +387,17 @@ class BattlePanel extends PSRoomPanel<BattleRoom> {
 			this.battleHeight = 360;
 		}
 	}
+	fastForwardIfRejoining() {
+		const room = this.props.room;
+		if (!room.rejoining || !room.side) return;
+		room.rejoining = false;
+		room.battle.seekTurn(Infinity);
+	}
 	override receiveLine(args: Args) {
 		const room = this.props.room;
 		switch (args[0]) {
 		case 'initdone':
-			room.battle.seekTurn(Infinity);
+			if (!PS.prefs.spectatefromstart) room.battle.seekTurn(Infinity);
 			return;
 		case 'request':
 			this.receiveRequest(args[1] ? JSON.parse(args[1]) : null);
@@ -421,9 +434,11 @@ class BattlePanel extends PSRoomPanel<BattleRoom> {
 		BattleChoiceBuilder.fixRequest(request, room.battle);
 
 		if (request.side) {
+			const wasPlayer = !!room.side;
 			room.battle.myPokemon = request.side.pokemon;
 			room.battle.setViewpoint(request.side.id);
 			room.side = request.side;
+			if (!wasPlayer) this.fastForwardIfRejoining();
 		}
 		if (request.ally) {
 			room.battle.myAllyPokemon = request.ally.pokemon;
@@ -1087,7 +1102,7 @@ class BattlePanel extends PSRoomPanel<BattleRoom> {
 				<ChatUserList room={room} top={this.battleHeight} minimized />
 				<button
 					data-href="battleoptions" class="button"
-					style={{ position: 'absolute', right: '75px', top: this.battleHeight }}
+					style={{ position: 'absolute', right: '10px', top: this.battleHeight + 2 }}
 				>
 					Battle options
 				</button>
@@ -1109,7 +1124,7 @@ class BattlePanel extends PSRoomPanel<BattleRoom> {
 			<ChatUserList room={room} left={640} minimized />
 			<button
 				data-href="battleoptions" class="button"
-				style={{ position: 'absolute', right: '15px' }}
+				style={{ position: 'absolute', right: '10px', top: '2px' }}
 			>
 				Battle options
 			</button>

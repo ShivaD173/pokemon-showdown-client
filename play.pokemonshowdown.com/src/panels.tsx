@@ -188,6 +188,7 @@ PS.router = new PSRouter();
 
 export class PSRoomPanel<T extends PSRoom = PSRoom> extends preact.Component<{ room: T }> {
 	subscriptions: PSSubscription[] = [];
+	wasVisible = true; // remember, shouldComponentUpdate isn't called on first render
 	subscribeTo<M>(
 		model: PSModel<M> | PSStreamModel<M>, callback: (value: M) => void = () => { this.forceUpdate(); }
 	): PSSubscription {
@@ -204,6 +205,12 @@ export class PSRoomPanel<T extends PSRoom = PSRoom> extends preact.Component<{ r
 			else this.receiveLine(args);
 		}));
 		this.componentDidUpdate();
+	}
+	override shouldComponentUpdate() {
+		const wasVisible = this.wasVisible;
+		const visible = PS.isVisible(this.props.room);
+		this.wasVisible = visible;
+		return visible || wasVisible;
 	}
 	justUpdatedDimensions = false;
 	updateDimensions() {
@@ -226,7 +233,7 @@ export class PSRoomPanel<T extends PSRoom = PSRoom> extends preact.Component<{ r
 	}
 	override componentDidUpdate() {
 		const room = this.props.room;
-		const currentlyHidden = !room.width && room.parentElem && ['popup', 'semimodal-popup'].includes(room.location);
+		const currentlyHidden = !room.width && room.parentElem && ['popup', 'modal-popup'].includes(room.location);
 		this.updateDimensions();
 		if (currentlyHidden) return;
 		if (room.focusNextUpdate) {
@@ -558,10 +565,11 @@ export class PSView extends preact.Component {
 			}
 			const modifierKey = ev.ctrlKey || ev.altKey || ev.metaKey || ev.shiftKey;
 			const altKey = !ev.ctrlKey && ev.altKey && !ev.metaKey && !ev.shiftKey;
-			if (ev.altKey && ev.shiftKey && ev.keyCode === 37) { // alt + shift + left
+			const altShiftKey = !ev.ctrlKey && ev.altKey && !ev.metaKey && ev.shiftKey;
+			if (altShiftKey && ev.keyCode === 37 && !isNonEmptyTextInput) { // alt + shift + left
 				PS.arrowKeysUsed = true;
 				PS.focusUnreadRoom('left');
-			} else if (ev.altKey && ev.shiftKey && ev.keyCode === 39) { // alt + shift + right
+			} else if (altShiftKey && ev.keyCode === 39 && !isNonEmptyTextInput) { // alt + shift + right
 				PS.arrowKeysUsed = true;
 				PS.focusUnreadRoom('right');
 			}
@@ -576,8 +584,10 @@ export class PSView extends preact.Component {
 				if (PS.popups.length) {
 					ev.stopImmediatePropagation();
 					ev.preventDefault();
-					PS.closePopup();
-					PS.focusRoom(PS.room.id);
+					if (PS.room.closable) {
+						PS.closePopup();
+						PS.focusRoom(PS.room.id);
+					}
 				} else if (PS.room.id === 'rooms') {
 					PS.hideRightRoom();
 				}
@@ -703,7 +713,9 @@ export class PSView extends preact.Component {
 		// iOS Safari bug, no global click events when tapping
 		// I'm sure it's intentional but it interferes with putting the dismiss feature in window.onclick
 		if ((ev.target as Element)?.className === 'ps-overlay') {
-			PS.closePopup();
+			if (PS.room.closable) {
+				PS.closePopup();
+			}
 			ev.preventDefault();
 			ev.stopImmediatePropagation();
 		}
@@ -761,11 +773,18 @@ export class PSView extends preact.Component {
 			elem.innerText = 'Copied!';
 			return true;
 		case 'send':
-			PS.send(elem.value);
-			return true;
 		case 'cmd':
 			const room = PS.getRoom(elem) || PS.mainmenu;
-			room.send(elem.value);
+			if (elem.name === 'send') {
+				// Legacy behavior. Use `data-cmd` or `data-sendraw` once we drop support for the old client.
+				if ((room as ChatRoom).pmTarget) {
+					PS.send(elem.value);
+				} else {
+					room.sendDirect(elem.value);
+				}
+			} else {
+				room.send(elem.value);
+			}
 			return true;
 		}
 		return false;
@@ -821,7 +840,7 @@ export class PSView extends preact.Component {
 			PS.update();
 		}
 
-		if (room.location === 'modal-popup' || !room.parentElem || !source) {
+		if (!room.parentElem || !source) {
 			return { maxWidth: width || 480 };
 		}
 		if (!room.width || !room.height) {
@@ -904,7 +923,8 @@ export class PSView extends preact.Component {
 
 		}
 
-		if (width) style.maxWidth = width;
+		// -2 to exclude 1px border on each side
+		if (width) style.maxWidth = typeof width === 'number' ? width - 2 : width;
 
 		return style;
 	}
@@ -927,7 +947,7 @@ export class PSView extends preact.Component {
 		let rooms = [] as preact.VNode[];
 		for (const roomid in PS.rooms) {
 			const room = PS.rooms[roomid]!;
-			if (PS.isNormalRoom(room)) {
+			if (PS.isPanel(room)) {
 				rooms.push(this.renderRoom(room));
 			}
 		}
