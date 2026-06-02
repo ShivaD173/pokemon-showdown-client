@@ -298,9 +298,6 @@ export const Dex = new class implements ModdedDex {
 			// Hack until I do this the right way in tiers
 			dex = Dex.forGen(Dex.formatGen(format), format);
 		}
-		if (dex.gen === 9 && formatid.includes('legends')) {
-			dex = Dex.mod('gen9legendsou' as ID);
-		}
 		if (dex.gen === 9 && formatid.includes('champions')) {
 			dex = Dex.mod('champions' as ID);
 		}
