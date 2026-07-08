@@ -1599,7 +1599,11 @@ export class BattleTooltips {
 		if (pokemon.nature) {
 			let natureVals = BattleNatures[pokemon.nature];
 			if (natureVals.minus === 'spe') maxNatureMult = 0.9;
-			if (natureVals.plus === 'spe') minNatureMult = 1.1;
+			else if (natureVals.plus === 'spe') minNatureMult = 1.1;
+			else {
+				minNatureMult = 1;
+				maxNatureMult = 1;
+			}
 		}
 
 		let min;
