@@ -620,6 +620,7 @@ Storage.compareTeams = function (serverTeam, localTeam) {
 };
 
 Storage.loadRemoteTeams = function (after) {
+	if (Storage.prefs('nosyncteams')) return;
 	$.get(app.user.getActionPHP(), { act: 'getteams' }, Storage.safeJSON(function (data) {
 		if (data.actionerror) {
 			// Hack to stop error messages on side server
