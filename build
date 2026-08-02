@@ -72,7 +72,8 @@ execSync(`node ./build-tools/update` + full, options);
 if (full) {
 	try {
 		execSync(`node ./build-tools/build-commands`, options);
-		execSync(`node ./build-tools/build-replays`, options);
+		// Not building replays for now
+		// execSync(`node ./build-tools/build-replays`, options);
 	} catch (e) {
 		console.error(e);
 	}
