@@ -545,7 +545,7 @@ export const Dex = new class implements ModdedDex {
 		return this.formats.get(format).gen;
 	}
 	forFormat(format: string) {
-		return this.mod(this.formats.get(format).mod);
+		return this.mod(this.formats.get(format).mod, format);
 	}
 
 	resolveAvatar(avatar: string): string {
