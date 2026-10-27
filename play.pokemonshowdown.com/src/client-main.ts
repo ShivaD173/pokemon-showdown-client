@@ -45,6 +45,7 @@ export interface PSConfig {
 		mainmenuHTML?: string,
 		roomlistTopHTML?: string,
 		roomlistAfterFirstHTML?: string,
+		htmlDidMount?: () => void,
 	} | null;
 	routes: {
 		root: string,
@@ -195,6 +196,7 @@ class PSPrefs extends PSStreamModel<string | null> {
 		blockPMs?: boolean | string,
 		blockChallenges?: boolean,
 		language?: string,
+		allowLadderBots?: boolean,
 	} = {};
 
 	// #endregion Prefs
@@ -418,7 +420,7 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
 		return formatEntry?.teambuilderFormat || formatid;
 	}
 	getKey(name: string) {
-		const baseKey: string = toID(name) || '0';
+		const baseKey: string = toID(name).slice(0, 40) || '0';
 		let key = baseKey;
 		let i = 1;
 		while (key in this.byKey) {
@@ -2281,7 +2283,8 @@ export const PS = new class extends PSModel {
 		}
 		return null;
 	}
-	dragOnto(fromRoom: PSRoom, toLocation: 'left' | 'right' | 'mini-window', toIndex: number) {
+	dragOnto(fromRoom: PSRoom | undefined, toLocation: 'left' | 'right' | 'mini-window', toIndex: number) {
+		if (!fromRoom) return;
 		// one day you will be able to rearrange mainmenu and rooms, but not today
 		if (fromRoom.id === '' || fromRoom.id === 'rooms') return;
 
