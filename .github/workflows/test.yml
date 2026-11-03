@@ -32,7 +32,7 @@ jobs:
     - name: Check out server for full-test
       uses: actions/checkout@v6
       with:
-        repository: smogon/pokemon-showdown
+        repository: ShivaD173/pokemon-showdown
         path: caches/pokemon-showdown
     - run: npm ci
       working-directory: caches/pokemon-showdown
